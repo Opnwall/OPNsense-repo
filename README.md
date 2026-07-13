@@ -24,6 +24,7 @@ pkg update -f
 
 | Package | Version | Description |
 | --- | --- | --- |
+| `os-ddclient-opnwall` | 1.0 | Extended DDClient replacement with Aliyun, Tencent Cloud and IPv6 interface support |
 | `os-ddns-go` | 1.0 | DDNS-Go dynamic DNS integration |
 | `os-lang` | 1.0 | Chinese localization updater |
 | `os-lucky` | 1.0 | Lucky network toolbox integration |
