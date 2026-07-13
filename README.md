@@ -1,4 +1,3 @@
-::: {align="center"}
 # 🧱 Opnwall OPNsense Community Repository
 
 **Community Plugins for OPNsense**
