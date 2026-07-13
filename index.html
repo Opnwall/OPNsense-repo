@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Opnwall OPNsense Community Repository</title>
+  <style>
+    body{max-width:900px;margin:3rem auto;padding:0 1.25rem;font:16px/1.6 system-ui,sans-serif;color:#222}
+    code,pre{background:#f4f4f4;border-radius:5px}code{padding:.15rem .35rem}pre{padding:1rem;overflow:auto}
+    table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:.65rem;text-align:left}th{background:#f5f5f5}
+  </style>
+</head>
+<body>
+  <h1>Opnwall OPNsense Community Repository</h1>
+  <p>Unofficial community plugins for OPNsense amd64 systems.</p>
+  <h2>Installation</h2>
+  <pre>fetch -o /usr/local/etc/pkg/repos/opnwall.conf https://opnwall.github.io/opnsense-repo/opnwall.conf
+pkg update -f</pre>
+  <p>After updating, open <strong>System → Firmware → Plugins</strong>.</p>
+  <h2>Plugins</h2>
+  <table><thead><tr><th>Package</th><th>Version</th><th>Description</th></tr></thead>
+  <tbody><tr><td><code>os-unboundcustom</code></td><td>1.2.3</td><td>Safe custom options for Unbound DNS</td></tr></tbody></table>
+  <p><small>This repository is independent and is not supported by the OPNsense project.</small></p>
+</body>
+</html>
