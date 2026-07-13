@@ -1,4 +1,4 @@
-# 🧱 Opnwall OPNsense Community Repository
+# Opnwall OPNsense Community Repository
 
 **Community Plugins for OPNsense**
 
@@ -18,15 +18,7 @@ It provides networking plugins that extend OPNsense with proxy
 integrations, DNS enhancements, Dynamic DNS, localization, diagnostics
 and system utilities.
 
-## ✨ Features
-
--   Native OPNsense plugin repository
--   GitHub Pages hosted
--   Automatic repository generation
--   GitHub Actions deployment
--   Easy installation and updates
-
-## 📦 Installation
+## Installation
 
 ``` sh
 fetch -o /usr/local/etc/pkg/repos/opnwall.conf \
@@ -43,13 +35,7 @@ Open:
 
 Install any package beginning with `os-`.
 
-## 🔄 Update
-
-``` sh
-pkg update -f
-```
-
-## ❌ Remove Repository
+## Remove Repository
 
 ``` sh
 rm -f /usr/local/etc/pkg/repos/opnwall.conf
@@ -58,7 +44,7 @@ pkg update -f
 
 Installed plugins remain available.
 
-## 📋 Plugins
+## Plugins
 
 | Package | Version | Description |
 | --- | --- | --- |
@@ -91,15 +77,7 @@ This repository is **NOT** affiliated with or supported by the OPNsense Project.
 -   🔧 网络工具
 -   📊 系统诊断插件
 
-## ✨ 特性
-
--   原生 OPNsense 插件
--   GitHub Pages 软件仓库
--   自动生成 pkg 仓库
--   GitHub Actions 自动发布
--   支持在线升级
-
-## 📦 安装
+## 安装方法
 
 ``` sh
 fetch -o /usr/local/etc/pkg/repos/opnwall.conf \
@@ -116,13 +94,7 @@ pkg update -f
 
 安装所有 `os-` 开头的软件包。
 
-## 🔄 更新
-
-``` sh
-pkg update -f
-```
-
-## ❌ 删除仓库
+## 删除仓库
 
 ``` sh
 rm -f /usr/local/etc/pkg/repos/opnwall.conf
@@ -131,7 +103,7 @@ pkg update -f
 
 不会卸载已经安装的插件。
 
-## 📦 插件列表
+## 插件列表
 
 | 插件 | 版本 | 描述 |
 | --- | --- | --- |
@@ -145,10 +117,6 @@ pkg update -f
 | `os-staticarp` | 1.0.1 | ARP 静态绑定工具 |
 | `os-ttyd` | 1.0.1 | ttyd 终端程序 |
 | `os-unboundcustom` | 1.0.1 | Unbound DNS 自定义选项 |
-
-## 🤝 贡献
-
-欢迎提交 Issue 与 Pull Request。
 
 ##  免责声明
 本仓库为社区项目，与 OPNsense 官方无任何关联，也不提供官方支持。
