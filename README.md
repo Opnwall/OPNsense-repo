@@ -8,8 +8,6 @@
 [![GitHub
 Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-brightgreen)]()
 
-`<img src="docs/logo.png" width="128" alt="Opnwall Logo"/>`{=html}
-
 *English \| [简体中文](#简体中文)*
 :::
 
