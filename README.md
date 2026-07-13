@@ -24,7 +24,15 @@ pkg update -f
 
 | Package | Version | Description |
 | --- | --- | --- |
-| `os-unboundcustom` | 1.2.7 | Safe custom options for Unbound DNS |
+| `os-ddns-go` | 1.0 | DDNS-Go dynamic DNS integration |
+| `os-lang` | 1.0 | Chinese localization updater |
+| `os-lucky` | 1.0 | Lucky network toolbox integration |
+| `os-mihomo` | 1.0.2 | Mihomo proxy integration |
+| `os-pftop` | 1.0 | pfTop diagnostics page |
+| `os-sing-box` | 1.0.2 | sing-box proxy integration |
+| `os-staticarp` | 1.0 | Static ARP binding integration |
+| `os-ttyd` | 1.0 | ttyd terminal integration |
+| `os-unboundcustom` | 1.2.8 | Safe custom options for Unbound DNS |
 
 ## Maintainer workflow
 
