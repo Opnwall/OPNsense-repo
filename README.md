@@ -9,13 +9,10 @@
 Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-brightgreen)]()
 
 *English \| [简体中文](#简体中文)*
-:::
 
 ------------------------------------------------------------------------
 
 # English
-
-## Overview
 
 **Opnwall** is a community-maintained package repository for **OPNsense
 amd64**.
@@ -86,8 +83,6 @@ Installed plugins remain available.
 
 # 简体中文
 
-## 项目简介
-
 **Opnwall** 是一个面向 **OPNsense amd64**
 的社区软件仓库，为官方仓库提供更多实用插件。
 
@@ -148,25 +143,18 @@ pkg update -f
 
 | 插件 | 版本 | 描述 |
 | --- | --- | --- |
-| `os-ddclient-opnwall` | 1.0.1 | Extended DDClient replacement with Aliyun, Tencent Cloud and IPv6 interface support |
-| `os-ddns-go` | 1.0.1 | DDNS-Go dynamic DNS integration |
-| `os-lang` | 1.0.1 | Chinese localization updater |
-| `os-lucky` | 1.0.1 | Lucky network toolbox integration |
-| `os-mihomo` | 1.0.1 | Mihomo proxy integration |
-| `os-pftop` | 1.0.1 | pfTop diagnostics page |
-| `os-sing-box` | 1.0.1 | sing-box proxy integration |
-| `os-staticarp` | 1.0.1 | Static ARP binding integration |
-| `os-ttyd` | 1.0.1 | ttyd terminal integration |
-| `os-unboundcustom` | 1.0.1 | Safe custom options for Unbound DNS |
+| `os-ddclient-opnwall` | 1.0.1 | 增强版 DDClient 替代方案，支持阿里云、腾讯云及 IPv6 接口 |
+| `os-ddns-go` | 1.0.1 | DDNS-Go 动态 DNS 集成 |
+| `os-lang` | 1.0.1 | 中文汉化工具 |
+| `os-lucky` | 1.0.1 | Lucky 网络工具箱集成 |
+| `os-mihomo` | 1.0.1 | Mihomo 代理工具 |
+| `os-pftop` | 1.0.1 | pfTop 诊断工具 |
+| `os-sing-box` | 1.0.1 | sing-box 代理工具 |
+| `os-staticarp` | 1.0.1 | ARP静态绑定工具 |
+| `os-ttyd` | 1.0.1 | ttyd 终端程序 |
+| `os-unboundcustom` | 1.0.1 | Unbound DNS 自定义选项 |
 
 ## 🤝 Contributing / 贡献
 
-Issues and Pull Requests are welcome.
-
 欢迎提交 Issue 与 Pull Request。
 
-------------------------------------------------------------------------
-
-## 📄 License
-
-Each plugin may have its own license.
