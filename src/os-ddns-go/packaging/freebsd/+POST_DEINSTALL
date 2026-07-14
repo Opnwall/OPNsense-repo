@@ -1,0 +1,14 @@
+#!/bin/sh
+
+rm -f \
+	/etc/rc.conf.d/ddnsgo \
+	/var/log/ddnsgo.log \
+	/var/run/ddnsgo.pid \
+	/var/lib/php/tmp/opnsense_menu_cache.xml \
+	/var/lib/php/tmp/opnsense_acl_cache.json
+rm -rf /usr/local/etc/ddns-go
+
+service configd restart >/dev/null 2>&1 || true
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+
+exit 0

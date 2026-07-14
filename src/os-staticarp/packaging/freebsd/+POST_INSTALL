@@ -1,0 +1,40 @@
+#!/bin/sh
+
+ABI="$(pkg config ABI 2>/dev/null || pkg -vv 2>/dev/null | awk -F'"' '/ABI =/ {print $2; exit}')"
+
+case "$ABI" in
+	FreeBSD:14:amd64|FreeBSD:15:amd64|FreeBSD:16:amd64)
+		echo "===> Detected supported OPNsense ABI: $ABI"
+		;;
+	*)
+		echo "===> Unsupported ABI: ${ABI:-unknown}" >&2
+		echo "===> Supported: FreeBSD:14/15/16:amd64" >&2
+		exit 1
+		;;
+esac
+
+echo "===> Preparing Static Binding runtime"
+mkdir -p /etc/rc.conf.d /usr/local/etc/staticarp
+chmod 0755 /usr/local/sbin/staticarpctl /usr/local/etc/rc.d/os-staticarp 2>/dev/null || true
+chmod 0644 \
+	/usr/local/www/services_staticarp.php \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Staticarp/Menu/Menu.xml \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Staticarp/ACL/ACL.xml \
+	/usr/local/opnsense/service/conf/actions.d/actions_staticarp.conf 2>/dev/null || true
+
+[ -f /usr/local/etc/staticarp/settings.conf ] || printf '%s\n' 'enabled=NO' > /usr/local/etc/staticarp/settings.conf
+[ -f /usr/local/etc/staticarp/entries.conf ] || : > /usr/local/etc/staticarp/entries.conf
+[ -f /usr/local/etc/staticarp/interfaces.conf ] || : > /usr/local/etc/staticarp/interfaces.conf
+chmod 0644 /usr/local/etc/staticarp/settings.conf /usr/local/etc/staticarp/entries.conf /usr/local/etc/staticarp/interfaces.conf 2>/dev/null || true
+
+echo "===> Clearing OPNsense menu and ACL cache"
+rm -f \
+	/var/lib/php/tmp/opnsense_menu_cache.xml \
+	/var/lib/php/tmp/opnsense_acl_cache.json
+
+echo "===> Reloading OPNsense menu, ACL and configd actions"
+service configd restart >/dev/null 2>&1 || true
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+
+echo "===> Static Binding for OPNsense installed. Refresh the browser and open Services > Static Binding."
+exit 0

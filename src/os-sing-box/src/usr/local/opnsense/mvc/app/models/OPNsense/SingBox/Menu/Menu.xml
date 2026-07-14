@@ -1,0 +1,8 @@
+<menu>
+    <VPN>
+        <ProxySuite VisibleName="Proxy Suite" cssClass="fa fa-lock fa-fw">
+            <SingBox VisibleName="Sing-Box" order="30" url="/sing-box.php"/>
+            <SingBoxSubscribe VisibleName="Sing-Box Subscribe" order="40" url="/sing-box_sub.php"/>
+        </ProxySuite>
+    </VPN>
+</menu>

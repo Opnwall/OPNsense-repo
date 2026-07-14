@@ -1,0 +1,7 @@
+<menu>
+    <System>
+        <Diagnostics>
+            <Pftop VisibleName="pfTop" order="80" url="/diag_pftop.php" cssClass="fa fa-area-chart fa-fw"/>
+        </Diagnostics>
+    </System>
+</menu>

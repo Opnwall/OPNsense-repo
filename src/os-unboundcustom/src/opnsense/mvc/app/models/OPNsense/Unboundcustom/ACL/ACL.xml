@@ -1,0 +1,9 @@
+<acl>
+    <page-services-unbound-unboundcustom>
+        <name>Services: Unbound DNS: Custom Options</name>
+        <patterns>
+            <pattern>ui/unboundcustom/*</pattern>
+            <pattern>api/unboundcustom/*</pattern>
+        </patterns>
+    </page-services-unbound-unboundcustom>
+</acl>

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+rm -f \
+    /usr/local/etc/unbound.opnsense.d/custom-options.conf \
+    /usr/local/etc/unbound.opnsense.d/custom-options.conf.unboundcustom-backup \
+    /var/unbound/etc/custom-options.conf \
+    /var/unbound/etc/custom-options.conf.unboundcustom-backup
+service configd restart >/dev/null 2>&1 || true
+/usr/local/opnsense/scripts/firmware/register.php remove os-unboundcustom >/dev/null 2>&1 || true
+configctl unbound restart >/dev/null 2>&1 || true
+rm -f /var/lib/php/tmp/opnsense_menu_cache.xml
+configctl webgui restart >/dev/null 2>&1 || true
+exit 0

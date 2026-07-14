@@ -1,0 +1,4 @@
+Static Binding for OPNsense provides a WebGUI page, configd actions and boot
+integration for maintaining static ARP entries and per-interface ARP reply
+modes. It can copy the current ARP table, validate IP/MAC records and apply
+the selected policy without editing OPNsense core files.

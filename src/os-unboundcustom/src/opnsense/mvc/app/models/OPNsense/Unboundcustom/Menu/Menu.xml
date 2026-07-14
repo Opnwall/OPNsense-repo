@@ -1,0 +1,7 @@
+<menu>
+    <Services>
+        <Unbound>
+            <Unboundcustom VisibleName="Custom Options" order="70" cssClass="fa fa-code" url="/ui/unboundcustom/general/index" />
+        </Unbound>
+    </Services>
+</menu>

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo "===> Refreshing OPNsense menu cache"
+rm -f /var/lib/php/tmp/opnsense_menu_cache.xml /var/lib/php/tmp/opnsense_acl_cache.json
+rm -f /usr/local/opnsense/service/conf/actions.d/actions_mihomo.conf
+service configd restart >/dev/null 2>&1 || true
+
+echo "===> Scheduling mihomo residual directory cleanup"
+(
+    sleep 3
+    rm -rf /usr/local/etc/mihomo
+) >/dev/null 2>&1 &

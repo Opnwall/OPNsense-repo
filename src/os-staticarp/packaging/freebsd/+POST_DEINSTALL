@@ -1,0 +1,12 @@
+#!/bin/sh
+
+rm -f /etc/rc.conf.d/staticarp
+rm -rf /usr/local/etc/staticarp
+rm -f \
+	/var/lib/php/tmp/opnsense_menu_cache.xml \
+	/var/lib/php/tmp/opnsense_acl_cache.json
+
+service configd restart >/dev/null 2>&1 || true
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+
+exit 0

@@ -1,0 +1,117 @@
+#!/bin/sh
+
+CONFIG_FILE="/conf/config.xml"
+TMP_FILE="/tmp/config.xml.tmp"
+TUN_DEVICE="tun_singbox"
+RULE_UUID="762b3ec8-79c2-48b4-9793-c653bb3d2265"
+
+pkg_timestamp() {
+    date | sed 's/[^A-Za-z0-9]/_/g'
+}
+
+echo "===> Configuring os-sing-box"
+
+mkdir -p /etc/rc.conf.d
+echo 'sing_box_enable="YES"' > /etc/rc.conf.d/sing_box
+touch /var/log/sing-box.log /var/log/sing-box_sub.log 2>/dev/null || true
+chmod 0755 /usr/local/etc/sing-box/sub/sub.sh 2>/dev/null || true
+rm -f /usr/local/www/services_sub.php /usr/local/www/status_sing_box_logs.php
+rm -f /usr/local/www/services_sing_box.php /usr/local/www/status_sing_box.php
+rm -f /usr/local/www/services_singboxsub.php /usr/local/www/status_singboxsub_log.php
+rm -f /var/lib/php/tmp/opnsense_menu_cache.xml /var/lib/php/tmp/opnsense_acl_cache.json
+rm -rf /usr/local/opnsense/mvc/app/models/OPNsense/sing-box
+
+if command -v openssl >/dev/null 2>&1; then
+    CLASH_API_SECRET="$(openssl rand -hex 24)"
+elif command -v uuidgen >/dev/null 2>&1; then
+    CLASH_API_SECRET="$(uuidgen | tr -d '-')"
+else
+    CLASH_API_SECRET="$(date | cksum | awk '{print $1}')"
+fi
+for secret_file in /usr/local/etc/sing-box/config.json /usr/local/etc/sing-box/sub/template.json; do
+    if [ -f "$secret_file" ]; then
+        sed -i '' "s/\"secret\": \"CHANGE_ME\"/\"secret\": \"${CLASH_API_SECRET}\"/" "$secret_file" 2>/dev/null || true
+        sed -i '' "s/\"secret\": \"\"/\"secret\": \"${CLASH_API_SECRET}\"/" "$secret_file" 2>/dev/null || true
+        chmod 0600 "$secret_file" 2>/dev/null || true
+    fi
+done
+chmod 0644 /usr/local/etc/sing-box/config.json 2>/dev/null || true
+chmod 0600 /usr/local/etc/sing-box/sub/env /usr/local/etc/sing-box/sub/template.json 2>/dev/null || true
+
+find_tun_interface() {
+    awk '
+    BEGIN { in_block = 0; current = ""; found = ""; max_opt = -1 }
+    {
+      if ($0 ~ /^[[:space:]]*<opt[0-9]+>[[:space:]]*$/) {
+        line = $0
+        gsub(/^[[:space:]]*</, "", line)
+        gsub(/>[[:space:]]*$/, "", line)
+        current = line
+        in_block = 1
+        num = current
+        sub(/^opt/, "", num)
+        if ((num + 0) > max_opt) max_opt = num + 0
+      }
+      if (in_block && $0 ~ /<if>tun_singbox<\/if>/) found = current
+      if (in_block && current != "" && $0 ~ ("^[[:space:]]*</" current ">[[:space:]]*$")) {
+        in_block = 0
+        current = ""
+      }
+    }
+    END { if (found != "") print found; else print "opt" (max_opt + 1) }
+    ' "$CONFIG_FILE"
+}
+
+if [ -f "$CONFIG_FILE" ]; then
+    cp "$CONFIG_FILE" "/conf/config.xml.bak.sing_box_pkg_install_$(pkg_timestamp)" || true
+    TARGET_IF_BLOCK="$(find_tun_interface)"
+
+    if ! grep -q "<if>${TUN_DEVICE}</if>" "$CONFIG_FILE"; then
+        echo "===> Adding ${TUN_DEVICE} interface as ${TARGET_IF_BLOCK}"
+        awk -v target="$TARGET_IF_BLOCK" -v dev="$TUN_DEVICE" '
+        BEGIN { inserted = 0 }
+        {
+          print
+          if ($0 ~ /<\/lo0>/ && inserted == 0) {
+            print "    <" target ">"
+            print "      <if>" dev "</if>"
+            print "      <descr>TUN</descr>"
+            print "      <enable>1</enable>"
+            print "    </" target ">"
+            inserted = 1
+          }
+        }
+        END { if (inserted == 0) exit 1 }
+        ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE" || rm -f "$TMP_FILE"
+    fi
+
+    TARGET_IF_BLOCK="$(find_tun_interface)"
+    if ! grep -q "$RULE_UUID" "$CONFIG_FILE"; then
+        echo "===> Adding TUN firewall pass rule"
+        awk -v target="$TARGET_IF_BLOCK" -v uuid="$RULE_UUID" '
+        BEGIN { inserted = 0 }
+        {
+          if ($0 ~ /^[[:space:]]*<filter>[[:space:]]*$/ && inserted == 0) {
+            print
+            print "          <rule uuid=\"" uuid "\">"
+            print "            <type>pass</type>"
+            print "            <interface>" target "</interface>"
+            print "            <ipprotocol>inet</ipprotocol>"
+            print "            <source><network>" target "</network></source>"
+            print "            <destination><any/></destination>"
+            print "            <descr>sing-box TUN Allow</descr>"
+            print "          </rule>"
+            inserted = 1
+            next
+          }
+          print
+        }
+        END { if (inserted == 0) exit 1 }
+        ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE" || rm -f "$TMP_FILE"
+    fi
+fi
+
+echo "===> Reloading OPNsense services"
+service configd restart >/dev/null 2>&1 || true
+configctl filter reload >/dev/null 2>&1 || true
+service sing-box restart >/dev/null 2>&1 || true

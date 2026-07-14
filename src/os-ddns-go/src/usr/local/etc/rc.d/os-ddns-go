@@ -1,0 +1,73 @@
+#!/bin/sh
+
+# PROVIDE: ddnsgo
+# REQUIRE: NETWORKING LOGIN
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="ddnsgo"
+rcvar="ddnsgo_enable"
+
+load_rc_config "$name"
+
+: "${ddnsgo_enable:=YES}"
+: "${ddnsgo_config:=/usr/local/etc/ddns-go/config.yaml}"
+: "${ddnsgo_listen:=:9876}"
+: "${ddnsgo_interval:=300}"
+: "${ddnsgo_extra_args:=}"
+
+pidfile="/var/run/${name}.pid"
+logfile="/var/log/${name}.log"
+command="/usr/sbin/daemon"
+ddnsgo_bin="/usr/local/bin/ddns-go"
+
+start_precmd="${name}_prestart"
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+status_cmd="${name}_status"
+
+ddnsgo_prestart()
+{
+	if [ ! -x "$ddnsgo_bin" ]; then
+		echo "ddns-go binary not found at $ddnsgo_bin"
+		return 1
+	fi
+
+	mkdir -p "$(dirname "$ddnsgo_config")"
+	touch "$logfile"
+	chmod 0600 "$logfile"
+	rm -f "$pidfile"
+}
+
+ddnsgo_start()
+{
+	# shellcheck disable=SC2086
+	$command -P "$pidfile" -r -f -o "$logfile" -t "${name}:daemon" \
+		"$ddnsgo_bin" -c "$ddnsgo_config" -l "$ddnsgo_listen" -f "$ddnsgo_interval" $ddnsgo_extra_args
+}
+
+ddnsgo_stop()
+{
+	if [ -f "$pidfile" ]; then
+		daemon_pid="$(cat "$pidfile" 2>/dev/null)"
+		if [ -n "$daemon_pid" ] && kill -0 "$daemon_pid" 2>/dev/null; then
+			pkill -TERM -P "$daemon_pid" 2>/dev/null || true
+			kill -TERM "$daemon_pid" 2>/dev/null || true
+		fi
+		rm -f "$pidfile"
+	fi
+}
+
+ddnsgo_status()
+{
+	if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+		echo "${name} is running as pid $(cat "$pidfile")."
+		return 0
+	fi
+
+	echo "${name} is not running."
+	return 1
+}
+
+run_rc_command "$1"

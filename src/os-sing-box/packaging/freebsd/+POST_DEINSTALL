@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo "===> Refreshing OPNsense menu cache"
+rm -f /var/lib/php/tmp/opnsense_menu_cache.xml /var/lib/php/tmp/opnsense_acl_cache.json
+rm -f /usr/local/opnsense/service/conf/actions.d/actions_sing-box.conf
+service configd restart >/dev/null 2>&1 || true
+
+echo "===> Scheduling sing-box residual directory cleanup"
+(
+    sleep 3
+    rm -rf /usr/local/etc/sing-box
+) >/dev/null 2>&1 &

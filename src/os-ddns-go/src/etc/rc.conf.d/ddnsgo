@@ -1,0 +1,5 @@
+ddnsgo_enable="YES"
+ddnsgo_config="/usr/local/etc/ddns-go/config.yaml"
+ddnsgo_listen=":9876"
+ddnsgo_interval="300"
+ddnsgo_extra_args=""

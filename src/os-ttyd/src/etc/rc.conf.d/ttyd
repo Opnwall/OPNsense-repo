@@ -1,0 +1,4 @@
+ttyd_enable="YES"
+ttyd_port="7681"
+ttyd_interface="127.0.0.1"
+ttyd_command='printf "login: "; read -r ttyd_login; if [ -z "$ttyd_login" ]; then echo "login is required"; exit 1; fi; exec /usr/local/bin/ssh -tt -p 22 -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o ServerAliveInterval=30 -o StrictHostKeyChecking=accept-new "$ttyd_login@127.0.0.1"'

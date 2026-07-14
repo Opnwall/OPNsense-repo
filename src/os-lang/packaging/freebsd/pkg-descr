@@ -1,0 +1,4 @@
+Localization Tool for OPNsense adds a WebGUI page for downloading and applying
+the pfchina.org Chinese localization package. It installs only the WebGUI page
+and menu entry; localization files are fetched and applied explicitly by the
+administrator.

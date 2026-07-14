@@ -1,0 +1,3 @@
+lucky_enable="YES"
+lucky_conf_dir="/usr/local/etc/lucky"
+lucky_http_port="16601"

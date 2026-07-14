@@ -1,0 +1,140 @@
+#!/bin/sh
+
+# PROVIDE: sing_box
+# REQUIRE: NETWORKING
+# KEYWORD: shutdown
+
+# shellcheck disable=SC1091
+. /etc/rc.subr
+
+name="sing_box"
+# shellcheck disable=SC2034
+rcvar="sing_box_enable"
+
+pidfile="/var/run/sing-box.pid"
+logfile="/var/log/sing-box.log"
+command="/usr/local/bin/sing-box"
+config="/usr/local/etc/sing-box/config.json"
+
+# shellcheck disable=SC2034
+start_cmd="${name}_start"
+# shellcheck disable=SC2034
+stop_cmd="${name}_stop"
+# shellcheck disable=SC2034
+status_cmd="${name}_status"
+
+load_rc_config $name
+: "${sing_box_enable:=no}"
+
+wait_for_exit() {
+    pid="$1"
+    timeout="${2:-10}"
+
+    while [ "$timeout" -gt 0 ]; do
+        if ! kill -0 "$pid" 2>/dev/null; then
+            return 0
+        fi
+        sleep 1
+        timeout=$((timeout - 1))
+    done
+
+    return 1
+}
+
+sing_box_start() {
+    echo "Starting sing-box..."
+    if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+        echo "sing-box is already running."
+        return 1
+    fi
+
+    if service mihomo status >/dev/null 2>&1; then
+        echo "Refusing to start sing-box: mihomo is already running and owns transparent routing."
+        return 1
+    fi
+
+    if [ ! -x "$command" ] || [ ! -f "$config" ]; then
+        echo "sing-box binary or configuration is missing."
+        return 1
+    fi
+
+    if ! "$command" check -c "$config" >> "$logfile" 2>&1; then
+        echo "sing-box configuration validation failed."
+        return 1
+    fi
+
+    nohup "$command" run -c "$config" >> "$logfile" 2>&1 &
+    echo $! > "$pidfile"
+    sleep 1
+    if ! kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+        echo "sing-box exited during startup."
+        rm -f "$pidfile"
+        return 1
+    fi
+    timeout=20
+    while [ "$timeout" -gt 0 ]; do
+        if ifconfig tun_singbox >/dev/null 2>&1; then
+            break
+        fi
+        if ! kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+            echo "sing-box exited before creating tun_singbox."
+            rm -f "$pidfile"
+            return 1
+        fi
+        sleep 1
+        timeout=$((timeout - 1))
+    done
+    if ! ifconfig tun_singbox >/dev/null 2>&1; then
+        echo "sing-box did not create tun_singbox within 20 seconds."
+        return 1
+    fi
+    echo "Started with PID $(cat "$pidfile")"
+}
+
+sing_box_stop() {
+    echo "Stopping sing-box..."
+    if [ -f "$pidfile" ]; then
+        pid=$(cat "$pidfile")
+        if kill -0 "$pid" 2>/dev/null; then
+            proc_comm=$(ps -p "$pid" -o comm= 2>/dev/null)
+            case "$proc_comm" in
+                sing-box|*/sing-box)
+                    if kill "$pid" && wait_for_exit "$pid" 10; then
+                        rm -f "$pidfile"
+                        echo "Stopped."
+                    else
+                        echo "Timed out waiting for sing-box to stop."
+                        return 1
+                    fi
+                    ;;
+                *)
+                    echo "PID file points to a different process: $pid ($proc_comm)."
+                    return 1
+                    ;;
+            esac
+        else
+            rm -f "$pidfile"
+            echo "Stale PID file removed."
+        fi
+    else
+        echo "sing-box is not running (no pidfile)."
+    fi
+}
+
+sing_box_status() {
+    if [ -f "$pidfile" ]; then
+        pid=$(cat "$pidfile")
+        if kill -0 "$pid" 2>/dev/null; then
+            echo "sing-box is running as PID $pid."
+            return 0
+        else
+            echo "PID file found but process not running."
+            return 1
+        fi
+    else
+        echo "sing-box is not running."
+        return 1
+    fi
+}
+
+run_rc_command "$1"

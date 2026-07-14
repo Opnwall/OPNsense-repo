@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /bin/sh /usr/local/etc/sing-box/sub/sub.sh "$@"

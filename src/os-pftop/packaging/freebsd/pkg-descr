@@ -1,0 +1,3 @@
+pfTop for OPNsense adds a WebGUI diagnostics page for viewing pf state table
+activity through the system pftop utility. It installs only the pfTop page,
+menu entry and ACL metadata.

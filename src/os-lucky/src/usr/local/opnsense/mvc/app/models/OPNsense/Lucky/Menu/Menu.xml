@@ -1,0 +1,5 @@
+<menu>
+    <Services>
+        <Lucky VisibleName="Lucky" order="90" url="/lucky.php" cssClass="fa fa-random fa-fw"/>
+    </Services>
+</menu>

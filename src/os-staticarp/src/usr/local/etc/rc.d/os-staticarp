@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# PROVIDE: staticarp
+# REQUIRE: NETWORKING
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="staticarp"
+rcvar="staticarp_enable"
+start_cmd="staticarp_start"
+stop_cmd="staticarp_stop"
+
+load_rc_config "$name"
+: "${staticarp_enable:=YES}"
+
+staticarp_start()
+{
+	/usr/local/sbin/staticarpctl apply
+}
+
+staticarp_stop()
+{
+	/usr/local/sbin/staticarpctl reset
+}
+
+run_rc_command "$1"

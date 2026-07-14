@@ -1,0 +1,5 @@
+<menu>
+    <Services>
+        <LangTool VisibleName="汉化工具" url="/lang_update.php" cssClass="fa fa-language fa-fw"/>
+    </Services>
+</menu>

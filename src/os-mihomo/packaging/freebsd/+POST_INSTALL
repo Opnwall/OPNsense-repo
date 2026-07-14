@@ -1,0 +1,120 @@
+#!/bin/sh
+
+CONFIG_FILE="/conf/config.xml"
+TMP_FILE="/tmp/config.xml.tmp"
+TUN_DEVICE="tun_mihomo"
+RULE_UUID="5a73c3dc-69b1-4e15-89cb-b542aa2c1154"
+
+pkg_timestamp() {
+    date | sed 's/[^A-Za-z0-9]/_/g'
+}
+
+echo "===> Configuring os-mihomo"
+
+mkdir -p /etc/rc.conf.d
+echo 'mihomo_enable="YES"' > /etc/rc.conf.d/mihomo
+touch /var/log/mihomo.log /var/log/mihomo_sub.log 2>/dev/null || true
+chmod 0755 /usr/local/etc/mihomo/sub/sub.sh 2>/dev/null || true
+if command -v openssl >/dev/null 2>&1; then
+    MIHOMO_SECRET="$(openssl rand -hex 32)"
+else
+    MIHOMO_SECRET="$(uuidgen | tr -d '-')"
+fi
+for secret_file in /usr/local/etc/mihomo/config.yaml /usr/local/etc/mihomo/sub/template_config.yaml; do
+    [ -f "$secret_file" ] || continue
+    sed -i '' "s/^secret:.*/secret: ${MIHOMO_SECRET}/" "$secret_file"
+done
+chmod 0644 /usr/local/etc/mihomo/config.yaml 2>/dev/null || true
+chmod 0600 /usr/local/etc/mihomo/sub/env /usr/local/etc/mihomo/sub/template_config.yaml 2>/dev/null || true
+rm -f /usr/local/www/sub.php /usr/local/www/status_sub_logs.php /usr/local/www/status_mihomo.php
+rm -f /usr/local/www/services_mihomo.php /usr/local/www/status_mihomo_logs.php
+rm -f /usr/local/www/services_mihomosub.php /usr/local/www/status_mihomosub_log.php
+rm -f /var/lib/php/tmp/opnsense_menu_cache.xml /var/lib/php/tmp/opnsense_acl_cache.json
+rm -rf /usr/local/opnsense/mvc/app/models/OPNsense/Magic
+
+find_tun_interface() {
+    awk '
+    BEGIN { in_block = 0; current = ""; found = ""; max_opt = -1 }
+    {
+      if ($0 ~ /^[[:space:]]*<opt[0-9]+>[[:space:]]*$/) {
+        line = $0
+        gsub(/^[[:space:]]*</, "", line)
+        gsub(/>[[:space:]]*$/, "", line)
+        current = line
+        in_block = 1
+        num = current
+        sub(/^opt/, "", num)
+        if ((num + 0) > max_opt) max_opt = num + 0
+      }
+      if (in_block && $0 ~ /<if>tun_mihomo<\/if>/) found = current
+      if (in_block && current != "" && $0 ~ ("^[[:space:]]*</" current ">[[:space:]]*$")) {
+        in_block = 0
+        current = ""
+      }
+    }
+    END { if (found != "") print found; else print "opt" (max_opt + 1) }
+    ' "$CONFIG_FILE"
+}
+
+if [ -f "$CONFIG_FILE" ]; then
+    cp "$CONFIG_FILE" "/conf/config.xml.bak.mihomo_pkg_install_$(pkg_timestamp)" || true
+    TARGET_IF_BLOCK="$(find_tun_interface)"
+
+    if ! grep -q "<if>${TUN_DEVICE}</if>" "$CONFIG_FILE"; then
+        echo "===> Adding ${TUN_DEVICE} interface as ${TARGET_IF_BLOCK}"
+        awk -v target="$TARGET_IF_BLOCK" -v dev="$TUN_DEVICE" '
+        BEGIN { inserted = 0 }
+        {
+          print
+          if ($0 ~ /<\/lo0>/ && inserted == 0) {
+            print "    <" target ">"
+            print "      <if>" dev "</if>"
+            print "      <descr>TUN</descr>"
+            print "      <enable>1</enable>"
+            print "    </" target ">"
+            inserted = 1
+          }
+        }
+        END { if (inserted == 0) exit 1 }
+        ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE" || rm -f "$TMP_FILE"
+    fi
+
+    TARGET_IF_BLOCK="$(find_tun_interface)"
+    if ! grep -q "$RULE_UUID" "$CONFIG_FILE"; then
+        echo "===> Adding TUN firewall pass rule"
+        awk -v target="$TARGET_IF_BLOCK" -v uuid="$RULE_UUID" '
+        BEGIN { inserted = 0 }
+        {
+          if ($0 ~ /^[[:space:]]*<filter>[[:space:]]*$/ && inserted == 0) {
+            print
+            print "          <rule uuid=\"" uuid "\">"
+            print "            <type>pass</type>"
+            print "            <interface>" target "</interface>"
+            print "            <ipprotocol>inet</ipprotocol>"
+            print "            <source><network>" target "</network></source>"
+            print "            <destination><any/></destination>"
+            print "            <descr>Mihomo TUN Allow</descr>"
+            print "          </rule>"
+            inserted = 1
+            next
+          }
+          print
+        }
+        END { if (inserted == 0) exit 1 }
+        ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE" || rm -f "$TMP_FILE"
+    fi
+fi
+
+echo "===> Reloading OPNsense services"
+chmod 0755 /usr/local/opnsense/scripts/mihomo/setup_unbound.php 2>/dev/null || true
+/usr/local/opnsense/scripts/mihomo/setup_unbound.php install || {
+    echo "Failed to configure Unbound forwarding for Mihomo" >&2
+    exit 1
+}
+service configd restart >/dev/null 2>&1 || true
+configctl filter reload >/dev/null 2>&1 || true
+service mihomo restart >/dev/null 2>&1 || true
+configctl template reload OPNsense/Unbound >/dev/null 2>&1 || true
+configctl unbound restart >/dev/null 2>&1 || true
+/usr/local/sbin/unbound-control -c /var/unbound/unbound.conf flush_zone . >/dev/null 2>&1 || true
+configctl unbound cache flush >/dev/null 2>&1 || true

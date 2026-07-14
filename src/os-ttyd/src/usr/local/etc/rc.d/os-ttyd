@@ -1,0 +1,87 @@
+#!/bin/sh
+
+# PROVIDE: ttyd
+# REQUIRE: NETWORKING openssh
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="ttyd"
+rcvar="ttyd_enable"
+
+load_rc_config "$name"
+
+: "${ttyd_enable:=YES}"
+: "${ttyd_port:=7681}"
+: "${ttyd_interface:=127.0.0.1}"
+: "${ttyd_base_path:=/ttyd}"
+: "${ttyd_command:=printf \"login: \"; read -r ttyd_login; if [ -z \"\$ttyd_login\" ]; then echo \"login is required\"; exit 1; fi; exec /usr/local/bin/ssh -tt -p 22 -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no -o ServerAliveInterval=30 -o StrictHostKeyChecking=accept-new \"\$ttyd_login@127.0.0.1\"}"
+
+pidfile="/var/run/${name}.pid"
+logfile="/var/log/${name}.log"
+command="/usr/sbin/daemon"
+ttyd_bin="/usr/local/os-ttyd/bin/ttyd"
+ttyd_env="env LD_LIBRARY_PATH=/usr/local/os-ttyd/lib:/usr/local/lib"
+
+start_precmd="${name}_prestart"
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+status_cmd="${name}_status"
+
+ttyd_prestart()
+{
+	if [ ! -x "$ttyd_bin" ]; then
+		if [ -x /usr/local/bin/ttyd ]; then
+			ttyd_bin="/usr/local/bin/ttyd"
+		else
+			echo "ttyd is not installed."
+			return 1
+		fi
+	fi
+
+	if ! service openssh onestatus >/dev/null 2>&1; then
+		echo "openssh is not running. Enable Secure Shell in System > Settings > Administration."
+		return 1
+	fi
+
+	touch "$logfile"
+	chmod 0600 "$logfile"
+	rm -f "$pidfile"
+}
+
+ttyd_start()
+{
+	$command -P "$pidfile" -r -f -o "$logfile" -t "${name}:daemon" \
+		$ttyd_env "$ttyd_bin" \
+		--interface "$ttyd_interface" \
+		--port "$ttyd_port" \
+		--base-path "$ttyd_base_path" \
+		--writable \
+		--terminal-type xterm-256color \
+		sh -c "$ttyd_command"
+}
+
+ttyd_stop()
+{
+	if [ -f "$pidfile" ]; then
+		daemon_pid="$(cat "$pidfile" 2>/dev/null)"
+		if [ -n "$daemon_pid" ] && kill -0 "$daemon_pid" 2>/dev/null; then
+			pkill -TERM -P "$daemon_pid" 2>/dev/null || true
+			kill -TERM "$daemon_pid" 2>/dev/null || true
+		fi
+		rm -f "$pidfile"
+	fi
+}
+
+ttyd_status()
+{
+	if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+		echo "${name} is running as pid $(cat "$pidfile")."
+		return 0
+	fi
+
+	echo "${name} is not running."
+	return 1
+}
+
+run_rc_command "$1"

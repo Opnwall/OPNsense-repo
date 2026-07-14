@@ -1,0 +1,3 @@
+DDNS-Go for OPNsense integrates DDNS-Go with the OPNsense WebGUI, configd
+actions and rc.d service system. It provides a dynamic DNS client with a small
+web interface and local YAML configuration editing.

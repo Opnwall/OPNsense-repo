@@ -1,0 +1,7 @@
+<menu>
+    <System>
+        <Diagnostics>
+            <Ttyd VisibleName="ttyd" order="90" url="/diag_ttyd.php" cssClass="fa fa-terminal fa-fw"/>
+        </Diagnostics>
+    </System>
+</menu>

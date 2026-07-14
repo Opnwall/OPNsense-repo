@@ -1,0 +1,189 @@
+#!/bin/sh
+
+# PROVIDE: mihomo
+# REQUIRE: NETWORKING
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="mihomo"
+rcvar="mihomo_enable"
+desc="mihomo service"
+
+pidfile="/var/run/${name}.pid"
+logfile="/var/log/${name}.log"
+procname="/usr/local/bin/mihomo"
+command="/usr/sbin/daemon"
+required_files="/usr/local/bin/mihomo"
+
+start_precmd="mihomo_prestart"
+start_postcmd="mihomo_poststart"
+stop_cmd="mihomo_stop"
+status_cmd="mihomo_status"
+
+command_args="-P ${pidfile} -f -o ${logfile} -t ${name}:daemon /usr/local/bin/mihomo -d /usr/local/etc/mihomo/"
+
+: ${mihomo_enable:="NO"}
+
+mihomo_prestart()
+{
+    touch "${logfile}"
+
+    if service sing-box status >/dev/null 2>&1; then
+        echo "Refusing to start mihomo: sing-box is already running and owns transparent routing."
+        return 1
+    fi
+
+    if ! /usr/local/bin/mihomo -t -d /usr/local/etc/mihomo -f /usr/local/etc/mihomo/config.yaml >> "${logfile}" 2>&1; then
+        echo "Mihomo configuration validation failed."
+        return 1
+    fi
+
+    if [ -f "${pidfile}" ]; then
+        if kill -0 "$(cat "${pidfile}")" 2>/dev/null; then
+            echo "${name} is already running as pid $(cat "${pidfile}")."
+            return 1
+        fi
+        rm -f "${pidfile}"
+    fi
+
+    if pgrep -f "/usr/local/bin/mihomo -d /usr/local/etc/mihomo/" >/dev/null 2>&1; then
+        echo "A mihomo process is already running; refusing to start another instance."
+        return 1
+    fi
+
+    if ifconfig tun_mihomo >/dev/null 2>&1; then
+        echo "Removing stale tun_mihomo interface."
+        ifconfig tun_mihomo destroy || return 1
+    fi
+}
+
+mihomo_poststart()
+{
+    sleep 1
+
+    if [ -f "${pidfile}" ]; then
+        daemon_pid="$(cat "${pidfile}" 2>/dev/null)"
+        if [ -n "${daemon_pid}" ] && kill -0 "${daemon_pid}" 2>/dev/null; then
+            mihomo_pid="$(pgrep -P "${daemon_pid}" mihomo 2>/dev/null | head -n 1)"
+            if [ -n "${mihomo_pid}" ] && kill -0 "${mihomo_pid}" 2>/dev/null; then
+                echo "${name} started: daemon pid ${daemon_pid}, mihomo pid ${mihomo_pid}."
+                return 0
+            fi
+        fi
+    fi
+
+    echo "${name} failed to start."
+    return 1
+}
+
+mihomo_stop()
+{
+    stopped=0
+
+    if [ -f "${pidfile}" ]; then
+        daemon_pid="$(cat "${pidfile}" 2>/dev/null)"
+        if [ -n "${daemon_pid}" ] && kill -0 "${daemon_pid}" 2>/dev/null; then
+            mihomo_pids="$(pgrep -P "${daemon_pid}" mihomo 2>/dev/null)"
+
+            if [ -n "${mihomo_pids}" ]; then
+                echo "Stopping ${name} child process(es): ${mihomo_pids}"
+                kill ${mihomo_pids} 2>/dev/null || true
+            fi
+
+            echo "Stopping ${name} wrapper process: ${daemon_pid}"
+            kill "${daemon_pid}" 2>/dev/null || true
+            stopped=1
+
+            for _ in 1 2 3 4 5 6 7 8 9 10; do
+                still_running=0
+
+                if kill -0 "${daemon_pid}" 2>/dev/null; then
+                    still_running=1
+                fi
+
+                for pid in ${mihomo_pids}; do
+                    if kill -0 "${pid}" 2>/dev/null; then
+                        still_running=1
+                        break
+                    fi
+                done
+
+                [ "${still_running}" -eq 0 ] && break
+                sleep 1
+            done
+
+            if kill -0 "${daemon_pid}" 2>/dev/null; then
+                kill -KILL "${daemon_pid}" 2>/dev/null || true
+            fi
+
+            for pid in ${mihomo_pids}; do
+                if kill -0 "${pid}" 2>/dev/null; then
+                    kill -KILL "${pid}" 2>/dev/null || true
+                fi
+            done
+        fi
+    fi
+
+    extra_pids="$(pgrep -f "/usr/local/bin/mihomo -d /usr/local/etc/mihomo/" 2>/dev/null)"
+    if [ -n "${extra_pids}" ]; then
+        echo "Stopping stray ${name} process(es): ${extra_pids}"
+        kill ${extra_pids} 2>/dev/null || true
+        stopped=1
+        sleep 1
+        for pid in ${extra_pids}; do
+            if kill -0 "${pid}" 2>/dev/null; then
+                kill -KILL "${pid}" 2>/dev/null || true
+            fi
+        done
+    fi
+
+    rm -f "${pidfile}"
+
+    if ifconfig tun_mihomo >/dev/null 2>&1; then
+        ifconfig tun_mihomo destroy 2>/dev/null || true
+    fi
+
+    if pgrep -f "/usr/local/bin/mihomo -d /usr/local/etc/mihomo/" >/dev/null 2>&1; then
+        echo "${name} could not be stopped completely."
+        return 1
+    fi
+
+    if [ "${stopped}" -eq 1 ]; then
+        echo "${name} stopped."
+    else
+        echo "${name} is not running."
+    fi
+
+    return 0
+}
+
+mihomo_status()
+{
+    if [ -f "${pidfile}" ]; then
+        daemon_pid="$(cat "${pidfile}" 2>/dev/null)"
+        if [ -n "${daemon_pid}" ] && kill -0 "${daemon_pid}" 2>/dev/null; then
+            mihomo_pid="$(pgrep -P "${daemon_pid}" mihomo 2>/dev/null | head -n 1)"
+            if [ -n "${mihomo_pid}" ] && kill -0 "${mihomo_pid}" 2>/dev/null; then
+                echo "${name} is running: daemon pid ${daemon_pid}, mihomo pid ${mihomo_pid}."
+                return 0
+            fi
+            echo "${name} wrapper is running as pid ${daemon_pid}, but mihomo child process was not found."
+            return 1
+        fi
+        echo "${name} pid file exists but process is not running."
+        return 1
+    fi
+
+    mihomo_pid="$(pgrep -f "/usr/local/bin/mihomo -d /usr/local/etc/mihomo/" 2>/dev/null | head -n 1)"
+    if [ -n "${mihomo_pid}" ] && kill -0 "${mihomo_pid}" 2>/dev/null; then
+        echo "${name} process is running as pid ${mihomo_pid}, but pidfile is missing."
+        return 1
+    fi
+
+    echo "${name} is not running."
+    return 1
+}
+
+load_rc_config "${name}"
+run_rc_command "$1"

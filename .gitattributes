@@ -1,0 +1,4 @@
+*.dat binary
+*.db binary
+*.pkg binary
+*.xz binary

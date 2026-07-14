@@ -1,0 +1,5 @@
+sing-box proxy integration for OPNsense.
+
+This package installs the sing-box binary, OPNsense GUI pages, configd
+actions, rc.d service, default configuration, subscription helper, and
+OPNsense menu metadata.

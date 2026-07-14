@@ -1,0 +1,8 @@
+<menu>
+    <VPN>
+        <ProxySuite VisibleName="Proxy Suite" cssClass="fa fa-lock fa-fw">
+            <Mihomo VisibleName="Mihomo" order="10" url="/mihomo.php"/>
+            <MihomoSubscribe VisibleName="Mihomo Subscribe" order="20" url="/mihomo_sub.php"/>
+        </ProxySuite>
+    </VPN>
+</menu>

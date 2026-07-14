@@ -1,0 +1,57 @@
+#!/bin/sh
+
+ABI="$(pkg config ABI 2>/dev/null || pkg -vv 2>/dev/null | awk -F'"' '/ABI =/ {print $2; exit}')"
+
+case "$ABI" in
+	FreeBSD:14:amd64|FreeBSD:15:amd64|FreeBSD:16:amd64)
+		echo "===> Detected supported OPNsense ABI: $ABI"
+		;;
+	*)
+		echo "===> Unsupported ABI: ${ABI:-unknown}" >&2
+		echo "===> Supported: FreeBSD:14/15/16:amd64" >&2
+		exit 1
+		;;
+esac
+
+echo "===> Preparing DDNS-Go runtime"
+mkdir -p /etc/rc.conf.d /usr/local/etc/ddns-go
+chmod 0755 /usr/local/bin/ddns-go /usr/local/etc/rc.d/os-ddns-go 2>/dev/null || true
+chmod 0644 \
+	/usr/local/www/services_ddnsgo.php \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Ddnsgo/Menu/Menu.xml \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Ddnsgo/ACL/ACL.xml \
+	/usr/local/opnsense/service/conf/actions.d/actions_ddnsgo.conf \
+	/usr/local/share/opnsense-ddns-go/config.yaml.sample 2>/dev/null || true
+if [ ! -f /usr/local/etc/ddns-go/config.yaml ]; then
+	install -m 0600 /usr/local/share/opnsense-ddns-go/config.yaml.sample /usr/local/etc/ddns-go/config.yaml
+fi
+printf '%s\n' \
+	'ddnsgo_enable="YES"' \
+	'ddnsgo_config="/usr/local/etc/ddns-go/config.yaml"' \
+	'ddnsgo_listen=":9876"' \
+	'ddnsgo_interval="300"' \
+	'ddnsgo_extra_args=""' \
+	> /etc/rc.conf.d/ddnsgo
+service os-ddns-go enable >/dev/null 2>&1 || true
+touch /var/log/ddnsgo.log 2>/dev/null || true
+chmod 0600 /var/log/ddnsgo.log 2>/dev/null || true
+
+echo "===> Clearing OPNsense menu and ACL cache"
+rm -f \
+	/var/lib/php/tmp/opnsense_menu_cache.xml \
+	/var/lib/php/tmp/opnsense_acl_cache.json
+
+echo "===> Reloading OPNsense menu, ACL and configd actions"
+service configd restart >/dev/null 2>&1 || true
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+
+echo "===> Starting DDNS-Go service"
+service os-ddns-go onerestart >/dev/null 2>&1 || service os-ddns-go onestart >/dev/null 2>&1 || true
+
+if service os-ddns-go onestatus >/dev/null 2>&1; then
+	echo "===> DDNS-Go for OPNsense installed. Refresh the browser and open Services > DDNS-Go."
+else
+	echo "===> Installed, but DDNS-Go did not report running. Check /var/log/ddnsgo.log." >&2
+fi
+
+exit 0

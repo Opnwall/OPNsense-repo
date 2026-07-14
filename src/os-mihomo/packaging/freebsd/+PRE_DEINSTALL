@@ -1,0 +1,121 @@
+#!/bin/sh
+
+CONFIG_FILE="/conf/config.xml"
+TMP_FILE="/tmp/config.xml.tmp"
+RULE_UUID="5a73c3dc-69b1-4e15-89cb-b542aa2c1154"
+
+pkg_timestamp() {
+    date | sed 's/[^A-Za-z0-9]/_/g'
+}
+
+remove_mihomo_cron_items() {
+    awk '
+    BEGIN { in_cron = 0; in_item = 0; item_count = 0; drop = 0 }
+    function clear_item(    i) {
+      for (i = 1; i <= item_count; i++) delete item[i]
+      item_count = 0
+      drop = 0
+    }
+    function print_item(    i) {
+      for (i = 1; i <= item_count; i++) print item[i]
+    }
+    /^[[:space:]]*<cron>[[:space:]]*$/ {
+      in_cron = 1
+      print
+      next
+    }
+    /^[[:space:]]*<\/cron>[[:space:]]*$/ {
+      if (in_item == 1 && drop == 0) print_item()
+      in_item = 0
+      clear_item()
+      in_cron = 0
+      print
+      next
+    }
+    in_cron == 1 && /^[[:space:]]*<item>[[:space:]]*$/ {
+      in_item = 1
+      clear_item()
+      item[++item_count] = $0
+      next
+    }
+    in_cron == 1 && in_item == 1 {
+      item[++item_count] = $0
+      if ($0 ~ /Renew mihomo Subscription|mihomo[ _-]?[Ss]ubscription|mihomo_sub|mihomo sub-update|\/usr\/bin\/mihomo_sub/) drop = 1
+      if ($0 ~ /^[[:space:]]*<\/item>[[:space:]]*$/) {
+        if (drop == 0) print_item()
+        in_item = 0
+        clear_item()
+      }
+      next
+    }
+    { print }
+    END {
+      if (in_item == 1 && drop == 0) print_item()
+    }
+    ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE" || rm -f "$TMP_FILE"
+}
+
+echo "===> Stopping mihomo"
+service mihomo stop >/dev/null 2>&1 || true
+pkill -TERM -f '/usr/local/bin/mihomo' 2>/dev/null || true
+rm -f /var/run/mihomo.pid
+
+if [ -x /usr/local/opnsense/scripts/mihomo/setup_unbound.php ]; then
+    /usr/local/opnsense/scripts/mihomo/setup_unbound.php uninstall || true
+    configctl template reload OPNsense/Unbound >/dev/null 2>&1 || true
+    configctl unbound restart >/dev/null 2>&1 || true
+    /usr/local/sbin/unbound-control -c /var/unbound/unbound.conf flush_zone . >/dev/null 2>&1 || true
+    configctl unbound cache flush >/dev/null 2>&1 || true
+fi
+
+if [ -f "$CONFIG_FILE" ]; then
+    cp "$CONFIG_FILE" "/conf/config.xml.bak.mihomo_pkg_deinstall_$(pkg_timestamp)" || true
+    remove_mihomo_cron_items
+fi
+
+if [ -f "$CONFIG_FILE" ]; then
+    TARGET_IF_BLOCK="$(awk '
+    BEGIN { in_block = 0; current = ""; found = "" }
+    {
+      if ($0 ~ /^[[:space:]]*<opt[0-9]+>[[:space:]]*$/) {
+        line = $0
+        gsub(/^[[:space:]]*</, "", line)
+        gsub(/>[[:space:]]*$/, "", line)
+        current = line
+        in_block = 1
+      }
+      if (in_block && $0 ~ /<if>tun_mihomo<\/if>/) found = current
+      if (in_block && current != "" && $0 ~ ("^[[:space:]]*</" current ">[[:space:]]*$")) {
+        in_block = 0
+        current = ""
+      }
+    }
+    END { if (found != "") print found }
+    ' "$CONFIG_FILE")"
+
+    if [ -n "$TARGET_IF_BLOCK" ]; then
+        awk -v target="$TARGET_IF_BLOCK" '
+        BEGIN { skip = 0 }
+        {
+          if ($0 ~ ("^[[:space:]]*<" target ">[[:space:]]*$")) { skip = 1; next }
+          if (skip == 1) {
+            if ($0 ~ ("^[[:space:]]*</" target ">[[:space:]]*$")) skip = 0
+            next
+          }
+          print
+        }
+        ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE" || rm -f "$TMP_FILE"
+    fi
+
+    awk -v uuid="$RULE_UUID" '
+    BEGIN { skip = 0 }
+    $0 ~ "<rule uuid=\"" uuid "\">" { skip = 1; next }
+    skip == 1 {
+      if ($0 ~ /<\/rule>/) skip = 0
+      next
+    }
+    { print }
+    ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE" || rm -f "$TMP_FILE"
+fi
+
+configctl filter reload >/dev/null 2>&1 || true

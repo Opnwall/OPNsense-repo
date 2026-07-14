@@ -1,0 +1,17 @@
+#!/bin/sh
+
+echo "===> Preparing Localization Tool for OPNsense"
+chmod 0644 \
+	/usr/local/www/lang_update.php \
+	/usr/local/opnsense/mvc/app/models/OPNsense/LangTool/Menu/Menu.xml 2>/dev/null || true
+
+echo "===> Clearing OPNsense menu cache"
+rm -f \
+	/var/lib/php/tmp/opnsense_menu_cache.xml \
+	/var/lib/php/tmp/opnsense_acl_cache.json
+
+echo "===> Reloading OPNsense WebGUI"
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+
+echo "===> Localization Tool for OPNsense installed. Refresh the browser and open Services > 汉化工具."
+exit 0

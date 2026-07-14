@@ -1,0 +1,25 @@
+dnsconf:
+    - name: ""
+      ipv4:
+        enable: false
+        gettype: url
+        url: https://myip4.ipip.net
+        netinterface: ""
+        cmd: ""
+        domains: []
+      ipv6:
+        enable: false
+        gettype: url
+        url: https://speed.neu6.edu.cn/getIP.php
+        netinterface: ""
+        cmd: ""
+        ipv6reg: ""
+        domains: []
+ttl: ""
+username: admin
+password: admin
+webhookurl: ""
+webhookrequestbody: ""
+webhookheaders: ""
+notallowwanaccess: false
+lang: zh

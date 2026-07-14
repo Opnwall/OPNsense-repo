@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /bin/sh /usr/local/etc/mihomo/sub/sub.sh "$@"

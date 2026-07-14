@@ -1,0 +1,234 @@
+socks-port: 7891
+log-level: info #在调试结果后，改为error，减少日志输出。
+allow-lan: false
+bind-address: 127.0.0.1
+mode: rule
+keep-alive-interval: 15
+external-controller: 0.0.0.0:9090
+external-ui: /usr/local/etc/mihomo/ui
+external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
+secret: "CHANGE_ME"
+client-fingerprint: chrome
+profile:
+  store-selected: true
+  store-fake-ip: true
+geodata-mode: true
+geodata-loader: memconservative
+geo-auto-update: true
+geo-update-interval: 24
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+lan-allowed-ips:
+  - 0.0.0.0/0
+  - ::/0
+sniffer:
+  enable: true
+  parse-pure-ip: true
+  force-dns-mapping: true
+  override-destination: true
+  sniff:
+    HTTP:
+      ports:
+        - 80
+        - 8080-8880
+      override-destination: true
+    TLS:
+      ports:
+        - 443
+        - 8443
+    QUIC:
+      ports:
+        - 443
+        - 8443
+  skip-domain:
+    - "+.push.apple.com"
+    - Mijia Cloud
+tun:
+  enable: true
+  stack: gvisor #使用gvisor，提供更好的兼容性和性能，system栈可能在某些环境下存在兼容性问题。
+  device: tun_mihomo
+  mtu: 1500
+  auto-route: true
+  strict-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+dns:
+  enable: true
+  listen: 127.0.0.1:1053
+  ipv6: false
+  prefer-h3: false
+  use-hosts: true
+  use-system-hosts: true
+  respect-rules: true
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  proxy-server-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  direct-nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  direct-nameserver-follow-policy: false
+  nameserver-policy:
+    "geosite:private,cn":
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+    "geosite:gfw,geolocation-!cn":
+      - "https://dns.google/dns-query#RULES"
+      - "https://cloudflare-dns.com/dns-query#RULES"
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.0/15
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - "geosite:cn"
+    - "*.lan"
+    - "*.local"
+    - "localhost"
+    - "localhost.*"
+    - "+.local"
+    - "+.msftconnecttest.com"
+    - "+.msftncsi.com"
+    - "+.pool.ntp.org"
+    - "time.*.com"
+    - "time.*.gov"
+    - "time.*.edu.cn"
+    - "time.*.apple.com"
+    - "time-ios.apple.com"
+    - "+.push.apple.com"
+    - "+.market.xiaomi.com"
+    - "+.stun.*.*"
+    - "+.stun.*.*.*"
+    - "+.stun.*.*.*.*"
+    - "+.stun.*.*.*.*.*"
+proxies:
+  - name: vless-reality-vision-bw
+    type: vless
+    server: 88.88.88.88
+    port: 1443
+    uuid: aa5aa394-378c-4710-92e8-a441acdee9b9
+    network: tcp
+    udp: true
+    tls: true
+    flow: xtls-rprx-vision
+    servername: apple.com
+    reality-opts:
+      public-key: q4vXvVtKwT67g4tYa7twV5dFZY_ApCTBaSJTGXZpXD4
+      short-id: 89f095df
+    client-fingerprint: chrome
+
+  - name: hysteria2-bw
+    type: hysteria2
+    server: 88.88.88.88
+    port: 3443
+    password: aa5aa394-378c-4710-92e8-a441acdee9b9
+    alpn:
+      - h3
+    sni: www.bing.com
+    skip-cert-verify: false
+    fast-open: true
+
+  - name: tuic5-bw
+    type: tuic
+    server: 88.88.88.88
+    port: 4443
+    uuid: aa5aa394-378c-4710-92e8-a441acdee9b9
+    password: aa5aa394-378c-4710-92e8-a441acdee9b9
+    alpn:
+      - h3
+    disable-sni: true
+    reduce-rtt: true
+    udp-relay-mode: native
+    congestion-controller: bbr
+    sni: www.bing.com
+    skip-cert-verify: false
+
+  - name: anytls-bw
+    type: anytls
+    server: 88.88.88.88
+    port: 5443
+    password: aa5aa394-378c-4710-92e8-a441acdee9b9
+    client-fingerprint: chrome
+    udp: true
+    idle-session-check-interval: 30
+    idle-session-timeout: 30
+    sni: www.bing.com
+    skip-cert-verify: false
+proxy-groups:
+  - name: 🌍选择节点
+    type: select
+    proxies:
+      - 自动选择
+      - 负载均衡
+      - vless-reality-vision-bw
+      - hysteria2-bw
+      - tuic5-bw
+      - anytls-bw
+      - DIRECT
+  - name: 自动选择
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    lazy: true
+    proxies:
+      - vless-reality-vision-bw
+      - hysteria2-bw
+      - tuic5-bw
+      - anytls-bw
+  - name: 负载均衡
+    type: load-balance
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    strategy: consistent-hashing
+    lazy: true
+    proxies:
+      - vless-reality-vision-bw
+      - hysteria2-bw
+      - tuic5-bw
+      - anytls-bw
+  - name: 🤖AI
+    type: select
+    proxies:
+      - 🌍选择节点
+      - 自动选择
+      - vless-reality-vision-bw
+      - hysteria2-bw
+      - tuic5-bw
+      - anytls-bw
+  - name: 🍎Apple
+    type: select
+    proxies:
+      - DIRECT
+      - 🌍选择节点
+  - name: 🐟漏网之鱼
+    type: select
+    proxies:
+      - 🌍选择节点
+      - DIRECT
+rules:
+  - GEOSITE,private,DIRECT
+  - GEOSITE,cn,DIRECT
+  - GEOIP,CN,DIRECT,no-resolve
+  - DOMAIN-SUFFIX,push.apple.com,DIRECT
+  - DOMAIN-SUFFIX,apple.com,🍎Apple
+  - DOMAIN-SUFFIX,icloud.com,🍎Apple
+  - DOMAIN-SUFFIX,icloud-content.com,🍎Apple
+  - DOMAIN-SUFFIX,cdn-apple.com,🍎Apple
+  - DOMAIN-SUFFIX,openai.com,🤖AI
+  - DOMAIN-SUFFIX,chatgpt.com,🤖AI
+  - DOMAIN-SUFFIX,oaistatic.com,🤖AI
+  - DOMAIN-SUFFIX,oaiusercontent.com,🤖AI
+  - DOMAIN-SUFFIX,anthropic.com,🤖AI
+  - DOMAIN-SUFFIX,claude.ai,🤖AI
+  - DOMAIN-SUFFIX,gemini.google.com,🤖AI
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com,🤖AI
+  - DOMAIN-SUFFIX,ai.google.dev,🤖AI
+  - GEOSITE,geolocation-!cn,🌍选择节点
+  - MATCH,🐟漏网之鱼

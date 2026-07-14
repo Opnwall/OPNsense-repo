@@ -1,0 +1,11 @@
+<acl>
+    <page-vpn-mihomo>
+        <name>VPN: Proxy Suite: Mihomo</name>
+        <patterns>
+            <pattern>mihomo.php*</pattern>
+            <pattern>mihomo_logs.php*</pattern>
+            <pattern>mihomo_sub.php*</pattern>
+            <pattern>mihomo_sub_log.php*</pattern>
+        </patterns>
+    </page-vpn-mihomo>
+</acl>

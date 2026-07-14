@@ -1,0 +1,16 @@
+#!/bin/sh
+
+rm -f /etc/rc.conf.d/lucky /var/log/lucky.log
+rm -f \
+	/var/lib/php/tmp/opnsense_menu_cache.xml \
+	/var/lib/php/tmp/opnsense_acl_cache.json
+
+rmdir \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Lucky/Menu \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Lucky/ACL \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Lucky 2>/dev/null || true
+
+service configd restart >/dev/null 2>&1 || true
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+
+exit 0

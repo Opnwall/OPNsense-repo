@@ -1,0 +1,5 @@
+Adds an OPNsense MVC page for advanced Unbound custom configuration.
+
+Changes are syntax checked before Unbound is restarted.  If validation fails,
+the last generated fragment is restored and the running resolver is left
+untouched.

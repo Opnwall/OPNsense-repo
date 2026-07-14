@@ -1,0 +1,43 @@
+#!/bin/sh
+
+GREEN="\033[32m"
+YELLOW="\033[33m"
+RED="\033[31m"
+RESET="\033[0m"
+
+log() {
+	printf '%b%s%b\n' "$1" "$2" "$RESET"
+}
+
+log "$GREEN" "====== ttyd for OPNsense package setup ======"
+
+log "$YELLOW" "Setting file permissions..."
+chmod 0644 /etc/rc.conf.d/ttyd 2>/dev/null || true
+chmod 0755 /usr/local/etc/rc.d/os-ttyd 2>/dev/null || true
+chmod 0755 /usr/local/os-ttyd/bin/ttyd 2>/dev/null || true
+chmod 0644 \
+	/usr/local/etc/lighttpd_webgui/conf.d/ttyd.conf \
+	/usr/local/www/diag_ttyd.php \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Ttyd/Menu/Menu.xml \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Ttyd/ACL/ACL.xml \
+	/usr/local/opnsense/service/conf/actions.d/actions_ttyd.conf 2>/dev/null || true
+
+log "$YELLOW" "Clearing OPNsense menu and ACL cache..."
+rm -f \
+	/var/lib/php/tmp/opnsense_menu_cache.xml \
+	/var/lib/php/tmp/opnsense_acl_cache.json
+
+log "$YELLOW" "Reloading OPNsense menu, ACL and configd actions..."
+service configd restart >/dev/null 2>&1 || true
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+
+log "$YELLOW" "Starting ttyd service..."
+service os-ttyd onerestart >/dev/null 2>&1 || service os-ttyd onestart >/dev/null 2>&1 || true
+
+if service os-ttyd onestatus >/dev/null 2>&1; then
+	log "$GREEN" "Installation complete. Refresh the browser and open System > Diagnostics > ttyd."
+else
+	log "$RED" "Installation completed, but the service did not start. Ensure Secure Shell is enabled under System > Settings > Administration."
+fi
+
+exit 0

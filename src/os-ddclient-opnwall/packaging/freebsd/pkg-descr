@@ -1,0 +1,3 @@
+Complete replacement for the OPNsense os-ddclient plugin. It retains the
+official MVC user interface, service integration and providers, and adds
+Aliyun DNS, Tencent Cloud DNS and explicit IPv6 interface address selection.

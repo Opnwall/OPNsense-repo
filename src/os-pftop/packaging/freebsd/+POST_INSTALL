@@ -1,0 +1,18 @@
+#!/bin/sh
+
+echo "===> Preparing pfTop for OPNsense"
+chmod 0644 \
+	/usr/local/www/diag_pftop.php \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Pftop/Menu/Menu.xml \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Pftop/ACL/ACL.xml 2>/dev/null || true
+
+echo "===> Clearing OPNsense menu and ACL cache"
+rm -f \
+	/var/lib/php/tmp/opnsense_menu_cache.xml \
+	/var/lib/php/tmp/opnsense_acl_cache.json
+
+echo "===> Reloading OPNsense WebGUI"
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+
+echo "===> pfTop for OPNsense installed. Refresh the browser and open System > Diagnostics > pfTop."
+exit 0

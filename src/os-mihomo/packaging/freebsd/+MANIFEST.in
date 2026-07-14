@@ -1,0 +1,23 @@
+name: "@PKG_NAME@"
+origin: "@ORIGIN@"
+version: "@VERSION@"
+comment: "@COMMENT@"
+maintainer: "@MAINTAINER@"
+www: "@WWW@"
+abi: "@ABI@"
+arch: "@ARCH@"
+prefix: "@PREFIX@"
+flatsize: @FLATSIZE@
+deps: {
+    jq: {
+        origin: "textproc/jq"
+        version: ">=0"
+    },
+    curl: {
+        origin: "ftp/curl"
+        version: ">=0"
+    }
+}
+desc: <<EOD
+@DESC@
+EOD

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+service os-lucky onestop >/dev/null 2>&1 || true
+exit 0

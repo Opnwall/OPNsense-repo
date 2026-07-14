@@ -1,0 +1,102 @@
+#!/bin/sh
+
+set -eu
+
+CONFIG_DIR="/usr/local/etc/staticarp"
+SETTINGS_FILE="$CONFIG_DIR/settings.conf"
+ENTRIES_FILE="$CONFIG_DIR/entries.conf"
+INTERFACES_FILE="$CONFIG_DIR/interfaces.conf"
+
+mkdir -p "$CONFIG_DIR"
+
+get_setting() {
+	key="$1"
+	default="$2"
+	if [ -r "$SETTINGS_FILE" ]; then
+		value="$(awk -F= -v key="$key" '$1 == key {print substr($0, index($0, "=") + 1); exit}' "$SETTINGS_FILE")"
+		if [ -n "$value" ]; then
+			printf '%s\n' "$value"
+			return
+		fi
+	fi
+	printf '%s\n' "$default"
+}
+
+reset_interface_modes() {
+	[ -r "$INTERFACES_FILE" ] || return 0
+	while IFS= read -r line; do
+		case "$line" in
+			''|\#*) continue ;;
+		esac
+		device="$(printf '%s\n' "$line" | awk '{print $2}')"
+		[ -n "$device" ] || continue
+		/sbin/ifconfig "$device" arp -staticarp >/dev/null 2>&1 || true
+	done < "$INTERFACES_FILE"
+}
+
+apply_interface_modes() {
+	[ -r "$INTERFACES_FILE" ] || return 0
+	while IFS= read -r line; do
+		case "$line" in
+			''|\#*) continue ;;
+		esac
+		device="$(printf '%s\n' "$line" | awk '{print $2}')"
+		mode="$(printf '%s\n' "$line" | awk '{print $3}')"
+		[ -n "$device" ] || continue
+		/sbin/ifconfig "$device" arp -staticarp >/dev/null 2>&1 || true
+		case "$mode" in
+			staticarp|-arp)
+				/sbin/ifconfig "$device" "$mode" >/dev/null 2>&1 || true
+				;;
+		esac
+	done < "$INTERFACES_FILE"
+}
+
+load_entries() {
+	[ -s "$ENTRIES_FILE" ] || return 0
+	tmpfile="$(mktemp -t staticarp)"
+	: > "$tmpfile"
+	while IFS= read -r line; do
+		case "$line" in
+			''|\#*) continue ;;
+		esac
+		ip="$(printf '%s\n' "$line" | awk '{print $1}')"
+		mac="$(printf '%s\n' "$line" | awk '{print $2}')"
+		[ -n "$ip" ] && [ -n "$mac" ] || continue
+		if ifconfig | grep -Eq "^[[:space:]]*inet[[:space:]]+$ip[[:space:]]"; then
+			continue
+		fi
+		printf '%s %s\n' "$ip" "$mac" >> "$tmpfile"
+	done < "$ENTRIES_FILE"
+	if [ -s "$tmpfile" ]; then
+		/usr/sbin/arp -d -a >/dev/null 2>&1 || true
+		/usr/sbin/arp -f "$tmpfile" || true
+	fi
+	rm -f "$tmpfile"
+}
+
+case "${1:-apply}" in
+	apply)
+		if [ "$(get_setting enabled NO)" = "YES" ]; then
+			load_entries
+			apply_interface_modes
+		else
+			reset_interface_modes
+			/usr/sbin/arp -d -a >/dev/null 2>&1 || true
+		fi
+		;;
+	reset)
+		reset_interface_modes
+		/usr/sbin/arp -d -a >/dev/null 2>&1 || true
+		;;
+	status)
+		printf 'enabled=%s\n' "$(get_setting enabled NO)"
+		printf 'entries=%s\n' "$(awk '$0 !~ /^[[:space:]]*(#|$)/ {count++} END {print count + 0}' "$ENTRIES_FILE" 2>/dev/null || printf 0)"
+		;;
+	*)
+		echo "usage: staticarpctl [apply|reset|status]" >&2
+		exit 64
+		;;
+esac
+
+exit 0

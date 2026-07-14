@@ -1,0 +1,15 @@
+#!/bin/sh
+
+rm -f \
+	/var/log/ttyd.log \
+	/usr/local/etc/ttyd.crt \
+	/usr/local/etc/ttyd.key
+
+rm -f \
+	/var/lib/php/tmp/opnsense_menu_cache.xml \
+	/var/lib/php/tmp/opnsense_acl_cache.json
+
+service configd restart >/dev/null 2>&1 || true
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+
+exit 0

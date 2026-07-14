@@ -1,0 +1,5 @@
+<menu>
+    <Services>
+        <Ddnsgo VisibleName="DDNS-Go" url="/services_ddnsgo.php" cssClass="fa fa-tags fa-fw"/>
+    </Services>
+</menu>

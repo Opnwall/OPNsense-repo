@@ -58,8 +58,15 @@ Installed plugins remain available.
 | `os-ttyd` | 1.0.2 | ttyd terminal integration |
 | `os-unboundcustom` | 1.0.2 | Safe custom options for Unbound DNS |
 
+## Source code
+
+The complete source tree for every published plugin is available under
+[`src/`](src/). Each `src/os-*` directory is an independent project and can
+be built on a compatible OPNsense/FreeBSD host with its included `build.sh`.
+
 ## License
-These plugins and packages are free as in beer! There is no source code hosted but you may use them for free and forever. Selling these plugins is prohibited! 
+Source code and bundled third-party components remain subject to the license
+files and notices included with each project.
 
 ## Disclaimer
 This repository is **NOT** affiliated with or supported by the OPNsense Project.
@@ -119,8 +126,14 @@ pkg update -f
 | `os-ttyd` | 1.0.2 | ttyd 终端程序 |
 | `os-unboundcustom` | 1.0.2 | Unbound DNS 自定义选项 |
 
+## 源代码
+
+所有已发布插件的完整源码均位于 [`src/`](src/) 目录。每个 `src/os-*`
+目录都是独立项目，可在兼容的 OPNsense/FreeBSD 主机上使用项目内的
+`build.sh` 编译。
+
 ## 许可声明
-这些插件和软件包是免费的！有些虽然没有托管源码，但你可以免费并永久使用，禁止出售这些插件！
+源码及其中包含的第三方组件分别遵循各项目附带的许可证和声明。
 
 ##  免责声明
 本仓库为社区项目，与 OPNsense 官方无任何关联，也不提供官方支持。

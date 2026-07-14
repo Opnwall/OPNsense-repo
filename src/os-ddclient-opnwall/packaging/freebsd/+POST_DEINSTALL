@@ -1,0 +1,7 @@
+#!/bin/sh
+
+/usr/local/opnsense/scripts/firmware/register.php remove os-ddclient-opnwall >/dev/null 2>&1 || true
+rm -rf /usr/local/opnsense/scripts/ddclient/lib/__pycache__ /usr/local/opnsense/scripts/ddclient/lib/account/__pycache__
+rm -f /var/lib/php/tmp/opnsense_menu_cache.xml /var/lib/php/tmp/opnsense_acl_cache.json
+service configd restart >/dev/null 2>&1 || true
+exit 0

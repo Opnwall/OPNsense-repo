@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# PROVIDE: lucky
+# REQUIRE: NETWORKING
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="lucky"
+rcvar="lucky_enable"
+
+load_rc_config "$name"
+
+: "${lucky_enable:=YES}"
+: "${lucky_conf_dir:=/usr/local/etc/lucky}"
+: "${lucky_http_port:=16601}"
+
+pidfile="/var/run/${name}.pid"
+logfile="/var/log/${name}.log"
+command="/usr/sbin/daemon"
+lucky_bin="/usr/local/bin/lucky"
+
+start_precmd="${name}_prestart"
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+status_cmd="${name}_status"
+
+lucky_prestart()
+{
+	if [ ! -x "$lucky_bin" ]; then
+		echo "lucky binary not found at $lucky_bin"
+		return 1
+	fi
+
+	mkdir -p "$lucky_conf_dir"
+	touch "$logfile"
+	chmod 0600 "$logfile"
+	rm -f "$pidfile"
+}
+
+lucky_start()
+{
+	$command -P "$pidfile" -r -f -o "$logfile" -t "${name}:daemon" \
+		"$lucky_bin" -cd "$lucky_conf_dir" -port "$lucky_http_port"
+}
+
+lucky_stop()
+{
+	if [ -f "$pidfile" ]; then
+		daemon_pid="$(cat "$pidfile" 2>/dev/null)"
+		if [ -n "$daemon_pid" ] && kill -0 "$daemon_pid" 2>/dev/null; then
+			pkill -TERM -P "$daemon_pid" 2>/dev/null || true
+			kill -TERM "$daemon_pid" 2>/dev/null || true
+		fi
+		rm -f "$pidfile"
+	fi
+}
+
+lucky_status()
+{
+	if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
+		echo "${name} is running as pid $(cat "$pidfile")."
+		return 0
+	fi
+
+	echo "${name} is not running."
+	return 1
+}
+
+run_rc_command "$1"

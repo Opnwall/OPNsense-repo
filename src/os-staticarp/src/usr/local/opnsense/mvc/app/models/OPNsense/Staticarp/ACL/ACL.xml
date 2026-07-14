@@ -1,0 +1,8 @@
+<acl>
+    <page-services-staticarp>
+        <name>Services: 静态绑定</name>
+        <patterns>
+            <pattern>services_staticarp.php*</pattern>
+        </patterns>
+    </page-services-staticarp>
+</acl>
