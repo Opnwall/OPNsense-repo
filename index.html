@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="An unofficial community package repository for IPFire 2.29 x86_64, powered by ipfrepo.">
+  <meta name="theme-color" content="#9f1d18">
+  <title>IPFire Community Repository</title>
+  <style>
+    :root{
+      --red:#b3261e;
+      --red-dark:#64150f;
+      --red-soft:#fff1ef;
+      --bg:#f4f6f8;
+      --panel:#ffffff;
+      --line:#dfe3e6;
+      --text:#1b252c;
+      --muted:#66737c;
+      --code:#111820;
+      --shadow:0 18px 45px rgba(28,37,44,.08);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.7 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    a{color:var(--red-dark);text-decoration:none}
+    a:hover{text-decoration:underline}
+    button{font:inherit}
+    .wrap{width:min(1120px,calc(100% - 32px));margin:auto}
+    header{
+      position:relative;
+      overflow:hidden;
+      text-align:center;
+      padding:72px 0 52px;
+      background:
+        radial-gradient(circle at 15% 20%,rgba(179,38,30,.12),transparent 28%),
+        radial-gradient(circle at 85% 10%,rgba(100,21,15,.08),transparent 24%),
+        linear-gradient(145deg,#fff,#fff4f2);
+      border-bottom:1px solid var(--line);
+    }
+    header:after{
+      content:"";
+      position:absolute;
+      inset:auto -10% -110px;
+      height:180px;
+      background:var(--bg);
+      border-radius:50% 50% 0 0;
+    }
+    .hero{position:relative;z-index:1}
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border:1px solid rgba(179,38,30,.18);
+      border-radius:999px;
+      background:rgba(255,255,255,.8);
+      color:var(--red-dark);
+      font-size:.9rem;
+      font-weight:700;
+    }
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2.25rem,6vw,4rem);
+      line-height:1.08;
+      letter-spacing:-.04em;
+    }
+    .tag{
+      max-width:760px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem,2vw,1.18rem);
+    }
+    .badges{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:22px;
+    }
+    .badges img{height:22px}
+    .actions{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:28px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:11px 18px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      font-weight:700;
+      box-shadow:0 6px 18px rgba(28,37,44,.06);
+    }
+    .btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+    .switch{margin-top:22px}
+    .switch button{
+      margin:0 3px;
+      padding:8px 15px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      cursor:pointer;
+    }
+    .switch button.active{background:var(--red);border-color:var(--red);color:#fff}
+    main{position:relative;z-index:2;padding:14px 0 64px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{
+      margin-bottom:22px;
+      padding:28px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+    .feature{margin-bottom:0}
+    .feature h3{margin:0 0 8px;font-size:1.08rem}
+    .feature p{margin:0;color:var(--muted)}
+    h2{margin:0 0 16px;font-size:1.55rem}
+    h3{margin-top:0}
+    p{margin-top:0}
+    pre{
+      position:relative;
+      overflow:auto;
+      margin:12px 0 0;
+      padding:18px;
+      background:var(--code);
+      color:#eef4f7;
+      border-radius:12px;
+      border:1px solid #25303a;
+    }
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .copy{
+      position:absolute;
+      top:10px;
+      right:10px;
+      padding:5px 9px;
+      border:1px solid #3a4650;
+      border-radius:7px;
+      background:#1d2730;
+      color:#fff;
+      cursor:pointer;
+      font-size:.8rem;
+    }
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;min-width:720px}
+    th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left}
+    th{font-size:.9rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+    tbody tr:hover{background:#fafbfc}
+    .notice{
+      padding:18px;
+      border-left:4px solid #d48a20;
+      background:#fff8e9;
+      border-radius:10px;
+    }
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      padding-top:12px;
+    }
+    [data-lang]{display:none}
+    [data-lang].active{display:block}
+    @media (max-width:820px){
+      .grid{grid-template-columns:1fr}
+      header{padding-top:54px}
+      .card{padding:22px}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap hero">
+      <h1>OPNsense Community Repository</h1>
+      <p class="tagline">Community Plugins for OPNsense</p>
+      <div class="badges" aria-label="Project badges">
+        <img src="https://img.shields.io/badge/OPNsense-26.x-orange" alt="OPNsense 26.x">
+        <img src="https://img.shields.io/badge/Platform-amd64-blue" alt="Platform amd64">
+        <img src="https://img.shields.io/badge/License-Multiple-green" alt="License Multiple">
+        <img src="https://img.shields.io/badge/Hosted-GitHub%20Pages-brightgreen" alt="Hosted on GitHub Pages">
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="https://github.com/Opnwall/OPNsense-repo">GitHub Repository</a>
+        <a class="btn" href="https://github.com/Opnwall/OPNsense-repo/tree/main/src">Browse Source</a>
+      </div>
+
+    <div class="switch">
+      <button class="active" data-target="zh">简体中文</button>
+      <button data-target="en">English</button>
+    </div>
+  </div>
+</header>
+
+  <main class="wrap">
+    <div data-lang="en">
+      <section class="section">
+        <h2>Overview</h2>
+        <p class="lead">Community software repository for <strong>OPNsense</strong>, It extends OPNsense with proxy integrations, DNS enhancements, Dynamic DNS, localization, diagnostics and system utilities.</p>
+        <ul class="feature-list">
+          <li>🌐 Proxy integrations</li><li>🛡 DNS enhancements</li><li>☁️ Dynamic DNS</li>
+          <li>🌏 Localization</li><li>🔧 Network utilities</li><li>📊 Diagnostics</li>
+        </ul>
+      </section>
+
+      <section class="section" id="installation">
+        <h2>Installation</h2>
+        <pre><button class="copy" type="button">Copy</button><code>fetch -o /usr/local/etc/pkg/repos/opnwall.conf \
+  https://opnwall.github.io/OPNsense-repo/opnwall.conf
+
+pkg update -f</code></pre>
+        <p>After updating the package database, open:</p>
+        <div class="path">System
+└── Firmware
+    └── Plugins</div>
+        <p>Install any package beginning with <code>os-</code>.</p>
+      </section>
+
+      <section class="section">
+        <h2>Remove Repository</h2>
+        <pre><button class="copy" type="button">Copy</button><code>rm -f /usr/local/etc/pkg/repos/opnwall.conf
+pkg update -f</code></pre>
+        <p>Removing the repository does not uninstall plugins that are already installed.</p>
+      </section>
+
+      <section class="section">
+        <h2>Plugins</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Package</th><th>Version</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>os-ddclient-opnwall</code></td><td>1.0.2</td><td>Extended DDClient replacement with Aliyun, Tencent Cloud and IPv6 interface support</td></tr>
+            <tr><td><code>os-ddns-go</code></td><td>1.0.2</td><td>DDNS-Go dynamic DNS integration</td></tr>
+            <tr><td><code>os-lang</code></td><td>1.0.2</td><td>Chinese localization updater</td></tr>
+            <tr><td><code>os-lucky</code></td><td>1.0.2</td><td>Lucky network toolbox integration</td></tr>
+            <tr><td><code>os-mihomo</code></td><td>1.0.2</td><td>Mihomo proxy integration</td></tr>
+            <tr><td><code>os-pftop</code></td><td>1.0.2</td><td>pfTop diagnostics page</td></tr>
+            <tr><td><code>os-sing-box</code></td><td>1.0.2</td><td>sing-box proxy integration</td></tr>
+            <tr><td><code>os-staticarp</code></td><td>1.0.2</td><td>Static ARP binding integration</td></tr>
+            <tr><td><code>os-ttyd</code></td><td>1.0.2</td><td>ttyd terminal integration</td></tr>
+            <tr><td><code>os-unboundcustom</code></td><td>1.0.2</td><td>Safe custom options for Unbound DNS</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="section"><h2>License</h2><p>These plugins and packages are free to use permanently. Reselling these plugins is prohibited.</p></section>
+      <section class="section"><h2>Disclaimer</h2><div class="notice">This repository is <strong>not affiliated with or supported by the OPNsense Project</strong>. Test packages before using them in production.</div></section>
+    </div>
+
+    <div data-lang="zh" class="active">
+      <section class="section">
+        <h2>项目简介</h2>
+        <p class="lead"><strong>OPNsense</strong> 社区软件仓库，为 OPNsense 提供代理集成、DNS 增强、动态 DNS、中文汉化、系统诊断和网络工具等扩展。</p>
+        <ul class="feature-list">
+          <li>🌐 代理插件</li><li>🛡 DNS 增强</li><li>☁️ 动态 DNS</li>
+          <li>🌏 中文汉化</li><li>🔧 网络工具</li><li>📊 系统诊断</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>安装方法</h2>
+        <pre><button class="copy" type="button">复制</button><code>fetch -o /usr/local/etc/pkg/repos/opnwall.conf \
+  https://opnwall.github.io/OPNsense-repo/opnwall.conf
+
+pkg update -f</code></pre>
+        <p>更新软件包数据库后，进入：</p>
+        <div class="path">系统
+└── 固件
+    └── 插件</div>
+        <p>安装所有以 <code>os-</code> 开头的软件包。</p>
+      </section>
+
+      <section class="section">
+        <h2>删除仓库</h2>
+        <pre><button class="copy" type="button">复制</button><code>rm -f /usr/local/etc/pkg/repos/opnwall.conf
+pkg update -f</code></pre>
+        <p>删除仓库配置不会卸载已经安装的插件。</p>
+      </section>
+
+      <section class="section">
+        <h2>插件列表</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th>插件</th><th>版本</th><th>描述</th></tr></thead>
+          <tbody>
+            <tr><td><code>os-ddclient-opnwall</code></td><td>1.0.2</td><td>增强版 DDClient 替代方案，支持阿里云、腾讯云及 IPv6 接口</td></tr>
+            <tr><td><code>os-ddns-go</code></td><td>1.0.2</td><td>DDNS-Go 动态 DNS 集成</td></tr>
+            <tr><td><code>os-lang</code></td><td>1.0.2</td><td>中文汉化工具</td></tr>
+            <tr><td><code>os-lucky</code></td><td>1.0.2</td><td>Lucky 网络工具箱集成</td></tr>
+            <tr><td><code>os-mihomo</code></td><td>1.0.2</td><td>Mihomo 代理集成</td></tr>
+            <tr><td><code>os-pftop</code></td><td>1.0.2</td><td>pfTop 诊断页面</td></tr>
+            <tr><td><code>os-sing-box</code></td><td>1.0.2</td><td>sing-box 代理集成</td></tr>
+            <tr><td><code>os-staticarp</code></td><td>1.0.2</td><td>ARP 静态绑定工具</td></tr>
+            <tr><td><code>os-ttyd</code></td><td>1.0.2</td><td>ttyd Web 终端集成</td></tr>
+            <tr><td><code>os-unboundcustom</code></td><td>1.0.2</td><td>安全的 Unbound DNS 自定义选项</td></tr>
+          </tbody>    
+        </table></div> 
+      </section>
+      <section class="section"><h2>免责声明</h2><div class="notice">本仓库为独立社区项目，<strong>与 OPNsense 官方无任何关联，也不提供官方支持</strong>。在生产环境使用前请充分测试。</div></section>
+    </div>
+  </main>
+  <script>
+    const buttons = document.querySelectorAll('.switch button');
+    const panels = document.querySelectorAll('[data-lang]');
+    buttons.forEach(button => button.addEventListener('click', () => {
+      buttons.forEach(item => item.classList.toggle('active', item === button));
+      panels.forEach(panel => panel.classList.toggle('active', panel.dataset.lang === button.dataset.target));
+      document.documentElement.lang = button.dataset.target === 'zh' ? 'zh-CN' : 'en';
+    }));
+    document.querySelectorAll('.copy').forEach(button => button.addEventListener('click', async () => {
+      const text = button.parentElement.querySelector('code').innerText;
+      await navigator.clipboard.writeText(text);
+      const original = button.textContent;
+      button.textContent = document.documentElement.lang.startsWith('zh') ? '已复制' : 'Copied';
+      setTimeout(() => button.textContent = original, 1400);
+    }));
+  </script>
+</body>
+</html>
