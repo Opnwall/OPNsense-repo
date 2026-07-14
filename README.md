@@ -14,7 +14,7 @@
 [![GitHub
 Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-brightgreen)]()
 
-这是一个面向 **OPNsense amd64**的社区软件仓库，所提供的插件均为作者本人编写。
+这是一个面向 **OPNsense amd64**的社区软件仓库，所提供的插件均为本人编写。
 
 主要包含：
 
