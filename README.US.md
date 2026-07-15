@@ -59,6 +59,7 @@ Installed plugins remain available.
 | `os-pftop` | 1.0.2 | pfTop diagnostics page |
 | `os-sing-box` | 1.0.2 | sing-box proxy integration |
 | `os-staticarp` | 1.0.2 | Static ARP binding integration |
+| `os-speedtest` | 1.0.1 | Speedtest internet speed test |
 | `os-ttyd` | 1.0.2 | ttyd terminal integration |
 | `os-unboundcustom` | 1.0.2 | Safe custom options for Unbound DNS |
 
@@ -74,5 +75,4 @@ files and notices included with each project.
 
 ## Disclaimer
 This repository is **NOT** affiliated with or supported by the OPNsense Project.
-
 

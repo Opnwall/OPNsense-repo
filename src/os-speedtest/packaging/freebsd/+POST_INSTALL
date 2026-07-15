@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+ABI="$(pkg config ABI 2>/dev/null || pkg -vv 2>/dev/null | awk -F'"' '/ABI =/ {print $2; exit}')"
+case "$ABI" in
+	FreeBSD:14:amd64|FreeBSD:15:amd64|FreeBSD:16:amd64) ;;
+	*) echo "Unsupported OPNsense ABI: ${ABI:-unknown}" >&2; exit 1 ;;
+esac
+
+mkdir -p /var/db/speedtest
+chmod 0700 /var/db/speedtest
+chmod 0755 /usr/local/bin/opnsense-speedtest
+chmod 0644 /usr/local/www/diagnostics_speedtest.php \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Speedtest/Menu/Menu.xml \
+	/usr/local/opnsense/mvc/app/models/OPNsense/Speedtest/ACL/ACL.xml
+rm -f /var/lib/php/tmp/opnsense_menu_cache.xml /var/lib/php/tmp/opnsense_acl_cache.json
+configctl webgui restart >/dev/null 2>&1 || service lighttpd onerestart >/dev/null 2>&1 || true
+echo "Speedtest installed. Open Diagnostics > Speedtest."
+exit 0

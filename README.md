@@ -63,6 +63,7 @@ pkg update -f
 | `os-pftop` | 1.0.2 | pfTop 诊断工具 |
 | `os-sing-box` | 1.0.2 | sing-box 代理工具 |
 | `os-staticarp` | 1.0.2 | ARP 静态绑定工具 |
+| `os-speedtest` | 1.0.1 | Speedtest 互联网测速工具 |
 | `os-ttyd` | 1.0.2 | ttyd 终端程序 |
 | `os-unboundcustom` | 1.0.2 | Unbound DNS 自定义选项 |
 

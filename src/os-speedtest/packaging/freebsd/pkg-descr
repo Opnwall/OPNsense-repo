@@ -1,0 +1,3 @@
+Speedtest for OPNsense measures Internet latency, jitter, packet loss,
+download, and upload performance from a selected outbound interface.
+It uses the open-source speedtest-go engine and a multilingual WebGUI.

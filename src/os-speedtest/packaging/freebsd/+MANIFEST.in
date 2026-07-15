@@ -1,0 +1,14 @@
+name: "@PKG_NAME@"
+origin: "@ORIGIN@"
+version: "@VERSION@"
+comment: "@COMMENT@"
+maintainer: "@MAINTAINER@"
+www: "@WWW@"
+abi: "@ABI@"
+arch: "@ARCH@"
+prefix: "@PREFIX@"
+flatsize: @FLATSIZE@
+licenses: ["MIT"]
+desc: <<EOD
+@DESC@
+EOD
