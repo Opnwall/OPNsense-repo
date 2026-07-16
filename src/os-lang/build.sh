@@ -2,7 +2,7 @@
 set -eu
 
 PKG_NAME="${PKG_NAME:-os-lang}"
-VERSION="${VERSION:-1.0.2}"
+VERSION="${VERSION:-1.0.3}"
 ORIGIN="${ORIGIN:-opnsense/os-lang}"
 COMMENT="${COMMENT:-Chinese localization updater for OPNsense}"
 MAINTAINER="${MAINTAINER:-https://github.com/Opnwall/}"
