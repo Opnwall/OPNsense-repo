@@ -283,7 +283,10 @@ function langtool_install(&$log, &$readme)
             return false;
         }
 
-        mkdir($staging, 0700);
+        // The staging directory itself is archived as "." and extracted over
+        // /usr/local, so keep its mode aligned with the destination root.
+        // Its parent remains private (0700) for the duration of the update.
+        mkdir($staging, 0755);
         langtool_log($log, langtool_t('Extracting package...'));
         $extract = langtool_run('unzip -q -o ' . escapeshellarg($archive) . ' -d ' . escapeshellarg($staging));
         if ($extract['status'] !== 0) {

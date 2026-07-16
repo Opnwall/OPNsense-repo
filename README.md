@@ -57,7 +57,7 @@ pkg update -f
 | --- | --- | --- |
 | `os-ddclient-opnwall` | 1.0.2 | 增强版 DDClient 替代方案，支持阿里云、腾讯云及 IPv6 接口 |
 | `os-ddns-go` | 1.0.2 | DDNS-Go 动态 DNS |
-| `os-lang` | 1.0.2 | 中文汉化工具 |
+| `os-lang` | 1.0.3 | 中文汉化工具，修复更新语言包后 `/usr/local` 目录权限异常 |
 | `os-lucky` | 1.0.2 | Lucky 网络工具箱 |
 | `os-mihomo` | 1.0.2 | Mihomo 代理工具 |
 | `os-pftop` | 1.0.2 | pfTop 诊断工具 |

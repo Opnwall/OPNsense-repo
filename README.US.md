@@ -53,7 +53,7 @@ Installed plugins remain available.
 | --- | --- | --- |
 | `os-ddclient-opnwall` | 1.0.2 | Extended DDClient replacement with Aliyun, Tencent Cloud and IPv6 interface support |
 | `os-ddns-go` | 1.0.2 | DDNS-Go dynamic DNS integration |
-| `os-lang` | 1.0.2 | Chinese localization updater |
+| `os-lang` | 1.0.3 | Chinese localization updater; preserves `/usr/local` permissions during updates |
 | `os-lucky` | 1.0.2 | Lucky network toolbox integration |
 | `os-mihomo` | 1.0.2 | Mihomo proxy integration |
 | `os-pftop` | 1.0.2 | pfTop diagnostics page |
