@@ -73,6 +73,15 @@ Then, under Services > Unbound DNS > Query Forwarding, add a forwarding record p
 - Server Port: 5353
 ```
 
+You can also install the community plugin `os-unboundcustom` to add a custom option to Unbound, then enter the following content into the custom option box and enable it:
+```text
+server:
+    do-not-query-localhost: no
+forward-zone:
+    name: "."
+    forward-addr: 127.0.0.1@5353
+```
+
 ## Install
 
 Upload the package to OPNsense and run:
