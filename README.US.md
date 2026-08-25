@@ -22,7 +22,7 @@ integrations, DNS enhancements, Dynamic DNS, localization, diagnostics
 and system utilities.
 
 ## Installation
-
+Open the terminal and run the following command to add the community repository:
 ``` sh
 fetch -o /usr/local/etc/pkg/repos/opnwall.conf https://opnwall.github.io/OPNsense-repo/opnwall.conf
 pkg update -f
