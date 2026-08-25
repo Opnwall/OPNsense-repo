@@ -24,9 +24,7 @@ and system utilities.
 ## Installation
 
 ``` sh
-fetch -o /usr/local/etc/pkg/repos/opnwall.conf \
-  https://opnwall.github.io/OPNsense-repo/opnwall.conf
-
+fetch -o /usr/local/etc/pkg/repos/opnwall.conf https://opnwall.github.io/OPNsense-repo/opnwall.conf
 pkg update -f
 ```
 
