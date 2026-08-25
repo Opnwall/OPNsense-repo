@@ -28,9 +28,7 @@ Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-brightgreen)]()
 ## 安装方法
 
 ``` sh
-fetch -o /usr/local/etc/pkg/repos/opnwall.conf \
-  https://opnwall.github.io/OPNsense-repo/opnwall.conf
-
+fetch -o /usr/local/etc/pkg/repos/opnwall.conf https://opnwall.github.io/OPNsense-repo/opnwall.conf
 pkg update -f
 ```
 
