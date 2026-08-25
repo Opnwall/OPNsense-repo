@@ -26,7 +26,7 @@ Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-brightgreen)]()
 -   📊 系统诊断插件
 
 ## 安装方法
-
+进入终端，运行以下命令添加社区存储库：
 ``` sh
 fetch -o /usr/local/etc/pkg/repos/opnwall.conf https://opnwall.github.io/OPNsense-repo/opnwall.conf
 pkg update -f
