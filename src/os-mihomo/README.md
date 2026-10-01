@@ -50,7 +50,7 @@ pkg add -f os-mihomo.pkg
 ```
 安装完成后刷新 OPNsense WebGUI，进入：
 ```text
-VPN > Mihomo
+VPN > Proxy Suite > Mihomo
 ```
 ## 卸载命令
 ```sh
