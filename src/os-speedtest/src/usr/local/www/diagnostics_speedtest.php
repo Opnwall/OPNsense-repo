@@ -5,6 +5,8 @@ require_once('guiconfig.inc');
 const SPEEDTEST_STATE_DIR = '/var/db/speedtest';
 const SPEEDTEST_SETTINGS = SPEEDTEST_STATE_DIR . '/settings.json';
 const SPEEDTEST_RESULT = SPEEDTEST_STATE_DIR . '/result.json';
+const SPEEDTEST_PROGRESS = SPEEDTEST_STATE_DIR . '/progress.json';
+const SPEEDTEST_RUNNER = '/usr/local/opnsense/scripts/speedtest/speedtest.py';
 
 function speedtest_lang(): string {
     global $config;
@@ -155,26 +157,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$input_errors) {
             $settings = ['interface'=>$interface,'server_id'=>$server_id,'threads'=>(string)$threads];
             speedtest_save_settings($settings);
-            $args = ['--json','--thread',(string)$threads];
+            $args = ['--thread',(string)$threads];
             if ($server_id !== '') array_push($args, '--server', $server_id);
             $source = speedtest_source_address($interface, $interfaces);
             if ($source !== '') array_push($args, '--source', $source);
-            $command = '/bin/timeout 180 /usr/local/bin/opnsense-speedtest';
+            /* The test runs detached so the page can report each stage as it
+               finishes; a blocking request could only offer a spinner. */
+            speedtest_ensure_state();
+            @unlink(SPEEDTEST_RESULT);
+            $command = '/usr/local/bin/python3 ' . escapeshellarg(SPEEDTEST_RUNNER);
             foreach ($args as $arg) $command .= ' ' . escapeshellarg($arg);
-            set_time_limit(190);
-            exec($command . ' 2>&1', $output, $status);
-            $raw = implode("\n", $output);
-            $start = strpos($raw, '{');
-            $result_data = $start === false ? null : json_decode(substr($raw, $start), true);
-            if ($status === 0 && is_array($result_data) && !empty($result_data['servers'][0])) {
-                speedtest_ensure_state();
-                file_put_contents(SPEEDTEST_RESULT, json_encode($result_data, JSON_UNESCAPED_SLASHES), LOCK_EX);
-                chmod(SPEEDTEST_RESULT, 0600);
-                header('Location: diagnostics_speedtest.php'); exit;
-            }
-            $error_message = speedtest_t('failed') . ($raw !== '' ? ' ' . trim($raw) : '');
+            exec($command . ' >/dev/null 2>&1 &');
+            header('Location: diagnostics_speedtest.php'); exit;
         }
     }
+}
+
+if (($_GET['ajax'] ?? '') === 'progress') {
+    header('Content-Type: application/json; charset=UTF-8');
+    $raw = @file_get_contents(SPEEDTEST_PROGRESS);
+    echo is_string($raw) && $raw !== '' ? $raw : '{"state":"idle","stages":[]}';
+    exit;
 }
 
 $result = speedtest_load_result();
@@ -187,12 +190,12 @@ include('head.inc');
 include('fbegin.inc');
 ?>
 <style>
-.speedtest-page{max-width:none;width:100%}.speedtest-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid #ddd;margin-bottom:15px}.speedtest-metric{padding:18px;border-right:1px solid #ddd;background:#fff}.speedtest-metric:last-child{border-right:0}.speedtest-metric span{color:#667;display:block;font-size:12px}.speedtest-metric strong{display:block;font-size:25px;margin-top:5px;white-space:nowrap}.speedtest-metric small{color:#667;font-size:12px}.speedtest-control{max-width:480px;width:100%!important}.speedtest-refresh{display:block;margin-top:8px}.speedtest-default-icon{color:#333;margin-right:6px}.speedtest-actions{border-bottom:0!important;margin-bottom:0!important;padding-bottom:0!important}.speedtest-result th{padding-left:15px!important;width:200px}.speedtest-panel{border-radius:0;margin-bottom:12px}.speedtest-panel-heading{background:#f5f5f5;border-bottom:1px solid #ddd;color:#333;font-weight:700;padding:8px 12px}@media(max-width:800px){.speedtest-summary{grid-template-columns:1fr 1fr}.speedtest-metric{border-bottom:1px solid #ddd}}
+.speedtest-page{max-width:none;width:100%}.speedtest-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid #ddd;margin-bottom:15px}.speedtest-metric{padding:18px;border-right:1px solid #ddd;background:#fff}.speedtest-metric:last-child{border-right:0}.speedtest-metric span{color:#667;display:block;font-size:12px}.speedtest-metric strong{display:block;font-size:25px;margin-top:5px;white-space:nowrap}.speedtest-metric small{color:#667;font-size:12px}.speedtest-control{max-width:480px;width:100%!important}.speedtest-refresh{display:block;margin-top:8px}.speedtest-icon{margin-right:6px}.speedtest-stages{list-style:none;margin:8px 0 0;padding:0}.speedtest-stages li{font-family:monospace;font-size:12px;padding:1px 0}.speedtest-stages li:before{color:#5b5;content:'\2713';margin-right:6px}.speedtest-default-icon{color:#333;margin-right:6px}.speedtest-actions{border-bottom:0!important;margin-bottom:0!important;padding-bottom:0!important}.speedtest-result th{padding-left:15px!important;width:200px}.speedtest-panel{border-radius:0;margin-bottom:12px}.speedtest-panel-heading{background:#f5f5f5;border-bottom:1px solid #ddd;color:#333;font-weight:700;padding:8px 12px}@media(max-width:800px){.speedtest-summary{grid-template-columns:1fr 1fr}.speedtest-metric{border-bottom:1px solid #ddd}}
 </style>
 <section class="page-content-main"><div class="container-fluid speedtest-page"><div class="row"><section class="col-xs-12">
 <?php if ($input_errors) print_input_errors($input_errors); ?>
 <?php if ($error_message !== ''): ?><div class="alert alert-danger" role="alert"><?=htmlspecialchars($error_message)?></div><?php endif; ?>
-<div class="alert alert-info" id="speedtest-status" style="display:none"><i class="fa fa-spinner fa-spin icon-embed-btn"></i><strong><?=speedtest_t('running')?></strong></div>
+<div class="alert alert-info" id="speedtest-status" style="display:none"><i class="fa fa-spinner fa-spin speedtest-icon"></i><strong><?=speedtest_t('running')?></strong><ul id="speedtest-stages" class="speedtest-stages"></ul></div>
 <?php if ($server_result): ?>
 <div class="speedtest-summary">
 <div class="speedtest-metric"><span><?=speedtest_t('latency')?></span><strong><?=number_format(speedtest_duration_ms($server_result['latency'] ?? 0),2)?> <small>ms</small></strong></div>
@@ -212,8 +215,72 @@ include('fbegin.inc');
 <div class="form-group"><label class="col-sm-2 control-label"><?=speedtest_t('interface')?></label><div class="col-sm-10"><select class="form-control speedtest-control" name="interface"><option value="auto"><?=speedtest_t('automatic')?></option><?php foreach($interfaces as $name=>$item):?><option value="<?=htmlspecialchars($name)?>" <?=$settings['interface']===$name?'selected':''?>><?=htmlspecialchars($item['description'])?> (<?=htmlspecialchars($name)?>)</option><?php endforeach;?></select><span class="help-block"><?=speedtest_t('interface_help')?></span></div></div>
 <div class="form-group"><label class="col-sm-2 control-label"><?=speedtest_t('server')?></label><div class="col-sm-10"><select class="form-control speedtest-control" name="server_id"><option value=""><?=speedtest_t('server_auto')?></option><?php foreach($available_servers as $server):?><option value="<?=htmlspecialchars($server['id'])?>" <?=$settings['server_id']===$server['id']?'selected':''?>><?=htmlspecialchars('['.$server['id'].'] '.$server['name'].' - '.$server['sponsor'].' / '.$server['latency'].' / '.number_format((float)$server['distance'],1).' km')?></option><?php endforeach;?></select><button class="btn btn-default speedtest-refresh" type="submit" name="refresh_servers" id="refresh-servers"><i class="fa fa-refresh speedtest-default-icon"></i><?=speedtest_t('refresh')?></button><span class="help-block"><?=speedtest_t('server_help')?></span></div></div>
 <div class="form-group"><label class="col-sm-2 control-label"><?=speedtest_t('threads')?></label><div class="col-sm-10"><input class="form-control speedtest-control" type="number" min="1" max="16" name="threads" value="<?=htmlspecialchars($settings['threads'])?>"></div></div>
-<div class="form-group speedtest-actions"><div class="col-sm-offset-2 col-sm-10"><button class="btn btn-primary" type="submit" name="run" id="run-test"><i class="fa fa-tachometer icon-embed-btn"></i><?=speedtest_t('run')?></button> <button class="btn btn-default" type="submit" name="clear"><i class="fa fa-trash speedtest-default-icon"></i><?=speedtest_t('clear')?></button></div></div>
+<div class="form-group speedtest-actions"><div class="col-sm-offset-2 col-sm-10"><button class="btn btn-primary" type="submit" name="run" id="run-test"><i class="fa fa-tachometer speedtest-icon"></i><?=speedtest_t('run')?></button> <button class="btn btn-default" type="submit" name="clear"><i class="fa fa-trash speedtest-default-icon"></i><?=speedtest_t('clear')?></button></div></div>
 </div></div></form>
 </section></div></div></section>
-<script>document.getElementById('speedtest-form').addEventListener('submit',function(e){if(e.submitter&&(e.submitter.id==='run-test'||e.submitter.id==='refresh-servers')){e.preventDefault();e.submitter.disabled=true;const s=document.getElementById('speedtest-status');s.querySelector('strong').textContent=e.submitter.id==='refresh-servers'?<?=json_encode(speedtest_t('refreshing'))?>:<?=json_encode(speedtest_t('running'))?>;s.style.display='block';window.scrollTo({top:0,behavior:'smooth'});const a=document.createElement('input');a.type='hidden';a.name=e.submitter.id==='refresh-servers'?'refresh_servers':'run';a.value='1';this.appendChild(a);setTimeout(()=>HTMLFormElement.prototype.submit.call(this),80);}});</script>
+<script>
+(function () {
+    var box = document.getElementById('speedtest-status');
+    var list = document.getElementById('speedtest-stages');
+    var label = box.querySelector('strong');
+    var timer = null;
+    /* The progress file keeps its last state forever, so a finished run is what
+       every later page load sees first. Only a run this page watched finish is
+       worth reloading for; anything else is already on the page below. */
+    var watched = false;
+
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+    function poll() {
+        fetch('diagnostics_speedtest.php?ajax=progress', {credentials: 'same-origin'})
+            .then(function (r) { return r.json(); })
+            .then(function (state) {
+                if (state.state === 'running') {
+                    watched = true;
+                    box.style.display = 'block';
+                    list.innerHTML = '';
+                    (state.stages || []).forEach(function (stage) {
+                        var item = document.createElement('li');
+                        item.textContent = stage.text;
+                        list.appendChild(item);
+                    });
+                    return;
+                }
+                stop();
+                if (state.state === 'done') {
+                    if (watched) { window.location.reload(); }
+                    return;
+                }
+                if (state.state === 'failed' && watched) {
+                    box.style.display = 'block';
+                    box.className = 'alert alert-danger';
+                    label.textContent = state.error || <?=json_encode(speedtest_t('failed'))?>;
+                    box.querySelector('i').className = 'fa fa-exclamation-triangle speedtest-icon';
+                }
+            })
+            .catch(function () { stop(); });
+    }
+
+    document.getElementById('speedtest-form').addEventListener('submit', function (e) {
+        if (!e.submitter || (e.submitter.id !== 'run-test' && e.submitter.id !== 'refresh-servers')) { return; }
+        e.preventDefault();
+        e.submitter.disabled = true;
+        var refreshing = e.submitter.id === 'refresh-servers';
+        label.textContent = refreshing ? <?=json_encode(speedtest_t('refreshing'))?> : <?=json_encode(speedtest_t('running'))?>;
+        list.innerHTML = '';
+        box.style.display = 'block';
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        var flag = document.createElement('input');
+        flag.type = 'hidden';
+        flag.name = refreshing ? 'refresh_servers' : 'run';
+        flag.value = '1';
+        this.appendChild(flag);
+        setTimeout(function (form) { HTMLFormElement.prototype.submit.call(form); }, 80, this);
+    });
+
+    /* A detached run outlives the request that started it, so pick it up on load. */
+    timer = setInterval(poll, 1000);
+    poll();
+})();
+</script>
 <?php include('foot.inc'); ?>
