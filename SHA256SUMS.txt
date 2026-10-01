@@ -3,7 +3,7 @@
 652ce94a7692dae6af97fbe4648217b6e19291a3915e5ea1cbc4dc05a2b65bb0  repo/FreeBSD:14:amd64/All/os-lang-1.0.3.pkg
 940e8e0b39741d273e61d9a2f8d34064d0c1753ba5fd034de71a869999b7aaff  repo/FreeBSD:14:amd64/All/os-lang-1.0.4.pkg
 bbe3d702af7248ead8de37943f7a96c9d1d9c0b8093cc5936f1d54976821c91c  repo/FreeBSD:14:amd64/All/os-lucky-1.0.1.pkg
-d59b9ab60a9d0c32414ab6617f66e37e43f57c4455376b6fb73dfc8496cc2f80  repo/FreeBSD:14:amd64/All/os-mihomo-1.0.3.pkg
+544d68c2fdcb84dade20e2b635d0b67d1dbdeab3d9e9a045c048fffd52232393  repo/FreeBSD:14:amd64/All/os-mihomo-1.0.4.pkg
 3919d8f3c30446fc6b0dfe43f5122858faab7b2988a679fc2cf814263e2a131e  repo/FreeBSD:14:amd64/All/os-pftop-1.0.1.pkg
 e316afc1daa8f72367fcb48aef1a80cdc14b9ff0351f6f798a5cbbc6f937083a  repo/FreeBSD:14:amd64/All/os-sing-box-1.0.3.pkg
 d70aa50aaaa9df5b5d7f43945f6c3d35177263881be4bf669c6ae4419d28c559  repo/FreeBSD:14:amd64/All/os-speedtest-1.0.2.pkg
@@ -16,7 +16,7 @@ a533a9459e234ad24f464e08c3d158d196d6a0761e976bd6900a26482a98ed50  repo/FreeBSD:1
 652ce94a7692dae6af97fbe4648217b6e19291a3915e5ea1cbc4dc05a2b65bb0  repo/FreeBSD:15:amd64/All/os-lang-1.0.3.pkg
 be6d8a2ae97e75ae8839fcacdf0137f8aeb78ef3700dd69eda19fab6f5473559  repo/FreeBSD:15:amd64/All/os-lang-1.0.4.pkg
 83cbc4b706a10a0f0abf2e5a954fb30f41abb08ff4ff493bbc140e50f232fcaa  repo/FreeBSD:15:amd64/All/os-lucky-1.0.2.pkg
-2ba3a2c32df67130373311ed36182ea211ab9eaad1b48df4e0d90437ec969f0d  repo/FreeBSD:15:amd64/All/os-mihomo-1.0.3.pkg
+544d68c2fdcb84dade20e2b635d0b67d1dbdeab3d9e9a045c048fffd52232393  repo/FreeBSD:15:amd64/All/os-mihomo-1.0.4.pkg
 27933cf313f322fc4c9ee2bd820504742bc6f24d4abcdcf35af290f60d9f7762  repo/FreeBSD:15:amd64/All/os-pftop-1.0.2.pkg
 dc3eb9662bdbe2bbe4379bc7a3af4e89b8595c5773747a3cb72ad7b41a8d03de  repo/FreeBSD:15:amd64/All/os-sing-box-1.0.3.pkg
 e5aa048ee95a03bf1f098b5789b582781b852b7675697c94a6e1bf12cd1ca89e  repo/FreeBSD:15:amd64/All/os-speedtest-1.0.2.pkg

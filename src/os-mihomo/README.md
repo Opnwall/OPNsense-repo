@@ -14,7 +14,7 @@ Mihomo（原 Clash Meta）是一款高性能、功能丰富的开源代理核心
 
 在以下环境测试通过：
 
-- OPNsense 26.1.9
+- OPNsense 26.7.5
 
 ![](images/mihomo.png)
 
@@ -29,7 +29,7 @@ src/usr/local/bin/clash-meta-freebsd-amd64.xz
 https://github.com/Vincent-Loeng/clash-meta/releases/download/v1.19.31-vincent/clash-meta-freebsd-amd64.xz
 ```
 
-插件版本：`1.0.3`；FreeBSD 内核版本：`1.19.31-vincent`。二进制来源与 SHA256 记录在 `packaging/freebsd/binary-source.json`，构建时会校验摘要。
+插件版本：`1.0.4`；FreeBSD 内核版本：`1.19.31-vincent`。二进制来源与 SHA256 记录在 `packaging/freebsd/binary-source.json`，构建时会校验摘要。
 
 采用此仓库的 FreeBSD 适配内核。官方 Mihomo v1.19.32 在 OPNsense 26.7.5 / FreeBSD 15.1 实测创建 TUN 失败（`create NetworkUpdateMonitor: invalid argument`）。
 

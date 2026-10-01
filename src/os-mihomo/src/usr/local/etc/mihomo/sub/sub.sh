@@ -347,9 +347,10 @@ echo ""
 sleep 1
 # 优先获取防火墙的 LAN，其次 OPT1，最后回退到私网地址
 LAN_IP=$(
-  /usr/local/bin/php -r '
-    require_once("/etc/inc/config.inc");
-    require_once("/etc/inc/interfaces.inc");
+  /usr/local/bin/php -d display_errors=stderr -r '
+    require_once("/usr/local/etc/inc/util.inc");
+    require_once("/usr/local/etc/inc/config.inc");
+    require_once("/usr/local/etc/inc/interfaces.inc");
 
     $candidates = array("lan", "opt1");
 

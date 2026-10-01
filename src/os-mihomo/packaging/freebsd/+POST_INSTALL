@@ -84,9 +84,7 @@ if [ -f "$CONFIG_FILE" ]; then
         echo "===> Adding TUN firewall pass rule"
         awk -v target="$TARGET_IF_BLOCK" -v uuid="$RULE_UUID" '
         BEGIN { inserted = 0 }
-        {
-          if ($0 ~ /^[[:space:]]*<filter>[[:space:]]*$/ && inserted == 0) {
-            print
+        function add_rule() {
             print "          <rule uuid=\"" uuid "\">"
             print "            <type>pass</type>"
             print "            <interface>" target "</interface>"
@@ -96,12 +94,28 @@ if [ -f "$CONFIG_FILE" ]; then
             print "            <descr>Mihomo TUN Allow</descr>"
             print "          </rule>"
             inserted = 1
+        }
+        {
+          if ($0 ~ /^[[:space:]]*<filter([[:space:]][^>]*)?\/[[:space:]]*>[[:space:]]*$/ && inserted == 0) {
+            sub(/\/[[:space:]]*>/, ">")
+            print
+            add_rule()
+            print "  </filter>"
+            next
+          }
+          if ($0 ~ /^[[:space:]]*<filter([[:space:]][^>]*)?>[[:space:]]*$/ && inserted == 0) {
+            print
+            add_rule()
             next
           }
           print
         }
         END { if (inserted == 0) exit 1 }
-        ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE" || rm -f "$TMP_FILE"
+        ' "$CONFIG_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$CONFIG_FILE" || {
+            rm -f "$TMP_FILE"
+            echo "Failed to add Mihomo TUN firewall rule" >&2
+            exit 1
+        }
     fi
 fi
 

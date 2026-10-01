@@ -2,7 +2,7 @@
 set -eu
 
 PKG_NAME="${PKG_NAME:-os-mihomo}"
-VERSION="${VERSION:-1.0.3}"
+VERSION="${VERSION:-1.0.4}"
 ORIGIN="${ORIGIN:-opnsense/os-mihomo}"
 COMMENT="${COMMENT:-Mihomo proxy integration for OPNsense}"
 MAINTAINER="${MAINTAINER:-https://github.com/Opnwall/}"

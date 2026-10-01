@@ -27,6 +27,7 @@ Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-brightgreen)]()
 
 ## 安装方法
 进入终端，运行以下命令添加社区存储库：
+
 ``` sh
 fetch -o /usr/local/etc/pkg/repos/opnwall.conf https://opnwall.github.io/OPNsense-repo/opnwall.conf
 pkg update -f
@@ -55,10 +56,9 @@ pkg update -f
 | --- | --- | --- |
 | `os-ddclient-opnwall` | 1.0.2 | 增强版 DDClient 替代方案，支持阿里云、腾讯云及 IPv6 接口 |
 | `os-ddns-go` | 1.0.2 | DDNS-Go 动态 DNS |
-| `os-easytier` | 1.0.0 | EasyTier 组网 VPN，支持 WebGUI、动态接口和子网代理 |
 | `os-lang` | 1.0.4 | 中文汉化工具 |
 | `os-lucky` | 1.0.2 | Lucky 网络工具箱 |
-| `os-mihomo` | 1.0.3 | Mihomo 代理工具 |
+| `os-mihomo` | 1.0.4 | Mihomo 代理工具 |
 | `os-pftop` | 1.0.2 | pfTop 诊断工具 |
 | `os-sing-box` | 1.0.3 | sing-box 代理工具 |
 | `os-staticarp` | 1.0.2 | ARP 静态绑定工具 |

@@ -77,9 +77,7 @@ dns:
     - https://doh.pub/dns-query
   direct-nameserver-follow-policy: false
   nameserver-policy:
-    "geosite:private":
-      - system
-    "geosite:cn":
+    "geosite:private,cn":
       - https://dns.alidns.com/dns-query
       - https://doh.pub/dns-query
     "geosite:gfw,geolocation-!cn":

@@ -14,7 +14,7 @@ This project packages Mihomo as an OPNsense plugin so it can run on OPNsense and
 
 Tested on:
 
-- OPNsense 25.1
+- OPNsense 26.7.5
 
 ![](images/mihomo.us.png)
 
@@ -32,7 +32,7 @@ The build script prefers the local `src/usr/local/bin/clash-meta-freebsd-amd64.x
 https://github.com/Vincent-Loeng/clash-meta/releases/download/v1.19.31-vincent/clash-meta-freebsd-amd64.xz
 ```
 
-Plugin version: `1.0.3`; FreeBSD core version: `1.19.31-vincent`. The source URL and SHA256 are recorded in `packaging/freebsd/binary-source.json` and verified during packaging.
+Plugin version: `1.0.4`; FreeBSD core version: `1.19.31-vincent`. The source URL and SHA256 are recorded in `packaging/freebsd/binary-source.json` and verified during packaging.
 
 This plugin uses the adapted FreeBSD core. Official Mihomo v1.19.32 failed to create TUN on OPNsense 26.7.5 / FreeBSD 15.1 (`create NetworkUpdateMonitor: invalid argument`).
 
