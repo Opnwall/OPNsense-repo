@@ -23,14 +23,18 @@ Tested on:
 The project uses the static binary from [Vincent-Loeng](https://github.com/Vincent-Loeng/clash-meta). The default local asset path is:
 
 ```text
-bin/clash-meta-freebsd-amd64.xz
+src/usr/local/bin/clash-meta-freebsd-amd64.xz
 ```
 
-The build script prefers the local `bin/clash-meta-freebsd-amd64.xz` file. If it is missing, the script downloads it from GitHub:
+The build script prefers the local `src/usr/local/bin/clash-meta-freebsd-amd64.xz` file. If it is missing, the script downloads it from GitHub:
 
 ```text
-https://github.com/Vincent-Loeng/clash-meta/releases/latest/download/clash-meta-freebsd-amd64.xz
+https://github.com/Vincent-Loeng/clash-meta/releases/download/v1.19.31-vincent/clash-meta-freebsd-amd64.xz
 ```
+
+Plugin version: `1.0.3`; FreeBSD core version: `1.19.31-vincent`. The source URL and SHA256 are recorded in `packaging/freebsd/binary-source.json` and verified during packaging.
+
+This plugin uses the adapted FreeBSD core. Official Mihomo v1.19.32 failed to create TUN on OPNsense 26.7.5 / FreeBSD 15.1 (`create NetworkUpdateMonitor: invalid argument`).
 
 ## Notes
 

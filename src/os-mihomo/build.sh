@@ -2,7 +2,7 @@
 set -eu
 
 PKG_NAME="${PKG_NAME:-os-mihomo}"
-VERSION="${VERSION:-1.0.2}"
+VERSION="${VERSION:-1.0.3}"
 ORIGIN="${ORIGIN:-opnsense/os-mihomo}"
 COMMENT="${COMMENT:-Mihomo proxy integration for OPNsense}"
 MAINTAINER="${MAINTAINER:-https://github.com/Opnwall/}"
@@ -12,7 +12,8 @@ FORMAT="${FORMAT:-tgz}"
 ABI="${ABI:-universal}"
 OUTPUT_NAME="${OUTPUT_NAME:-${PKG_NAME}.pkg}"
 MIHOMO_ASSET="${MIHOMO_ASSET:-clash-meta-freebsd-amd64.xz}"
-MIHOMO_DOWNLOAD_URL="${MIHOMO_DOWNLOAD_URL:-https://github.com/Vincent-Loeng/clash-meta/releases/latest/download/$MIHOMO_ASSET}"
+MIHOMO_DOWNLOAD_URL="${MIHOMO_DOWNLOAD_URL:-https://github.com/Vincent-Loeng/clash-meta/releases/download/v1.19.31-vincent/$MIHOMO_ASSET}"
+MIHOMO_SHA256="${MIHOMO_SHA256:-fd4ffdd64d379f046dc1863df91329b1ab37e4fc8bb0aac95a1ef97c69c3d290}"
 DOWNLOAD_TIMEOUT="${DOWNLOAD_TIMEOUT:-300}"
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
@@ -55,7 +56,6 @@ need_file "src/usr/local/www/mihomo_logs.php"
 need_file "src/usr/local/www/mihomo_sub.php"
 need_file "src/usr/local/www/mihomo_sub_log.php"
 need_file "src/usr/bin/mihomo_sub"
-need_file "src/usr/local/bin/$MIHOMO_ASSET"
 need_file "packaging/freebsd/+MANIFEST.in"
 need_file "packaging/freebsd/+POST_INSTALL"
 need_file "packaging/freebsd/+PRE_DEINSTALL"
@@ -68,7 +68,7 @@ case "$ABI" in
         PKG_ARCH="freebsd:*:x86:64"
         ;;
     native)
-        PKG_ABI="$(pkg config ABI)"
+        PKG_ABI="$(env -u ABI pkg config ABI)"
         case "$PKG_ABI" in
             FreeBSD:*:amd64) ;;
             *) die "unsupported native ABI: $PKG_ABI" ;;
@@ -111,6 +111,9 @@ unpack_binary() {
     archive="$1"
     binary_dst="$2"
     tmp="$binary_dst.tmp"
+
+    actual_sha256="$(sha256 -q "$archive")"
+    [ "$actual_sha256" = "$MIHOMO_SHA256" ] || die "binary archive SHA256 mismatch: $archive"
 
     rm -f "$tmp" "$binary_dst"
     if xz -t "$archive" >/dev/null 2>&1; then

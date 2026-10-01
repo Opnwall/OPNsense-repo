@@ -2,7 +2,7 @@
 set -eu
 
 PKG_NAME="${PKG_NAME:-os-sing-box}"
-VERSION="${VERSION:-1.0.2}"
+VERSION="${VERSION:-1.0.3}"
 ORIGIN="${ORIGIN:-opnsense/os-sing-box}"
 COMMENT="${COMMENT:-sing-box proxy integration for OPNsense}"
 MAINTAINER="${MAINTAINER:-https://github.com/Opnwall/}"
@@ -11,8 +11,9 @@ PREFIX="${PREFIX:-/usr/local}"
 FORMAT="${FORMAT:-tgz}"
 ABI="${ABI:-universal}"
 OUTPUT_NAME="${OUTPUT_NAME:-${PKG_NAME}.pkg}"
-SING_BOX_ASSET="${SING_BOX_ASSET:-bsd-box-reF1nd-freebsd-amd64.xz}"
-SING_BOX_DOWNLOAD_URL="${SING_BOX_DOWNLOAD_URL:-https://github.com/Vincent-Loeng/bsd-box/releases/latest/download/$SING_BOX_ASSET}"
+SING_BOX_ASSET="${SING_BOX_ASSET:-bsd-box-freebsd-amd64.xz}"
+SING_BOX_DOWNLOAD_URL="${SING_BOX_DOWNLOAD_URL:-https://github.com/Vincent-Loeng/bsd-box/releases/download/v1.13.14-vincent/$SING_BOX_ASSET}"
+SING_BOX_SHA256="${SING_BOX_SHA256:-68ed9a83a33974600ca0068c758eea0dfb06a82833dfd065f40afa0780ae93d7}"
 DOWNLOAD_TIMEOUT="${DOWNLOAD_TIMEOUT:-300}"
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
@@ -55,7 +56,6 @@ need_file "src/usr/local/www/sing-box_log.php"
 need_file "src/usr/local/www/sing-box_sub.php"
 need_file "src/usr/local/www/sing-box_sub_log.php"
 need_file "src/usr/bin/sing_box_sub"
-need_file "src/usr/local/bin/$SING_BOX_ASSET"
 need_file "packaging/freebsd/+MANIFEST.in"
 need_file "packaging/freebsd/+POST_INSTALL"
 need_file "packaging/freebsd/+PRE_DEINSTALL"
@@ -68,7 +68,7 @@ case "$ABI" in
         PKG_ARCH="freebsd:*:x86:64"
         ;;
     native)
-        PKG_ABI="$(pkg config ABI)"
+        PKG_ABI="$(env -u ABI pkg config ABI)"
         case "$PKG_ABI" in
             FreeBSD:*:amd64) ;;
             *) die "unsupported native ABI: $PKG_ABI" ;;
@@ -111,6 +111,9 @@ unpack_binary() {
     archive="$1"
     binary_dst="$2"
     tmp="$binary_dst.tmp"
+
+    actual_sha256="$(sha256 -q "$archive")"
+    [ "$actual_sha256" = "$SING_BOX_SHA256" ] || die "binary archive SHA256 mismatch: $archive"
 
     rm -f "$tmp" "$binary_dst"
     if xz -t "$archive" >/dev/null 2>&1; then

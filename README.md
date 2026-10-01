@@ -58,9 +58,9 @@ pkg update -f
 | `os-easytier` | 1.0.0 | EasyTier 组网 VPN，支持 WebGUI、动态接口和子网代理 |
 | `os-lang` | 1.0.4 | 中文汉化工具 |
 | `os-lucky` | 1.0.2 | Lucky 网络工具箱 |
-| `os-mihomo` | 1.0.2 | Mihomo 代理工具 |
+| `os-mihomo` | 1.0.3 | Mihomo 代理工具 |
 | `os-pftop` | 1.0.2 | pfTop 诊断工具 |
-| `os-sing-box` | 1.0.2 | sing-box 代理工具 |
+| `os-sing-box` | 1.0.3 | sing-box 代理工具 |
 | `os-staticarp` | 1.0.2 | ARP 静态绑定工具 |
 | `os-speedtest` | 1.0.2 | Speedtest 互联网测速工具 |
 | `os-ttyd` | 1.0.2 | ttyd 终端程序 |

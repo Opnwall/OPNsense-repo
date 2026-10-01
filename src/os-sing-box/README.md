@@ -23,12 +23,16 @@ sing-box 是一款功能强大、性能优秀的开源网络代理平台，支�
 
 项目使用 [Vincent-Loeng](https://github.com/Vincent-Loeng/bsd-box) 静态二进制文件，默认文件路径如下：
 ```text
-bin/bsd-box-reF1nd-freebsd-amd64.xz
+src/usr/local/bin/bsd-box-freebsd-amd64.xz
 ```
-构建脚本会优先使用本地 `bin/bsd-box-reF1nd-freebsd-amd64.xz` 文件。如果本地文件不存在，会从 Github 下载：
+构建脚本会优先使用本地 `src/usr/local/bin/bsd-box-freebsd-amd64.xz` 文件。如果本地文件不存在，会从 Github 下载：
 ```text
-https://github.com/Vincent-Loeng/bsd-box/releases/latest/download/bsd-box-reF1nd-freebsd-amd64.xz
+https://github.com/Vincent-Loeng/bsd-box/releases/download/v1.13.14-vincent/bsd-box-freebsd-amd64.xz
 ```
+插件版本：`1.0.3`；FreeBSD 内核版本：`1.13.14-vincent`。二进制来源与 SHA256 记录在 `packaging/freebsd/binary-source.json`，构建时会校验摘要。
+
+OPNsense 使用 FreeBSD，因此采用此仓库的适配内核；官方 sing-box v1.14.2 未提供 FreeBSD 二进制。
+
 ## 注意事项
 
 1. 当前仅支持 x86_64 / amd64 平台。

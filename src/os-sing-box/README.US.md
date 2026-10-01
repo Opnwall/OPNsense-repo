@@ -23,14 +23,18 @@ Tested on:
 The project uses the static binary from [Vincent-Loeng](https://github.com/Vincent-Loeng/bsd-box). The default local asset path is:
 
 ```text
-bin/bsd-box-reF1nd-freebsd-amd64.xz
+src/usr/local/bin/bsd-box-freebsd-amd64.xz
 ```
 
-The build script prefers the local `bin/bsd-box-reF1nd-freebsd-amd64.xz` file. If it is missing, the script downloads it from GitHub:
+The build script prefers the local `src/usr/local/bin/bsd-box-freebsd-amd64.xz` file. If it is missing, the script downloads it from GitHub:
 
 ```text
-https://github.com/Vincent-Loeng/bsd-box/releases/latest/download/bsd-box-reF1nd-freebsd-amd64.xz
+https://github.com/Vincent-Loeng/bsd-box/releases/download/v1.13.14-vincent/bsd-box-freebsd-amd64.xz
 ```
+
+Plugin version: `1.0.3`; FreeBSD core version: `1.13.14-vincent`. The source URL and SHA256 are recorded in `packaging/freebsd/binary-source.json` and verified during packaging.
+
+OPNsense uses FreeBSD, so this plugin uses the adapted core; official sing-box v1.14.2 has no FreeBSD release binary.
 
 ## Notes
 

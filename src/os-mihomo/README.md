@@ -22,12 +22,16 @@ Mihomo（原 Clash Meta）是一款高性能、功能丰富的开源代理核心
 
 项目使用 [Vincent-Loeng](https://github.com/Vincent-Loeng/clash-meta) 静态二进制文件，文件路径如下：
 ```text
-bin/clash-meta-freebsd-amd64.xz
+src/usr/local/bin/clash-meta-freebsd-amd64.xz
 ```
-构建脚本会优先使用本地 `bin/clash-meta-freebsd-amd64.xz` 文件。如果本地文件不存在，会从 Github 下载：
+构建脚本会优先使用本地 `src/usr/local/bin/clash-meta-freebsd-amd64.xz` 文件。如果本地文件不存在，会从 Github 下载：
 ```text
-https://github.com/Vincent-Loeng/clash-meta/releases/latest/download/clash-meta-freebsd-amd64.xz
+https://github.com/Vincent-Loeng/clash-meta/releases/download/v1.19.31-vincent/clash-meta-freebsd-amd64.xz
 ```
+
+插件版本：`1.0.3`；FreeBSD 内核版本：`1.19.31-vincent`。二进制来源与 SHA256 记录在 `packaging/freebsd/binary-source.json`，构建时会校验摘要。
+
+采用此仓库的 FreeBSD 适配内核。官方 Mihomo v1.19.32 在 OPNsense 26.7.5 / FreeBSD 15.1 实测创建 TUN 失败（`create NetworkUpdateMonitor: invalid argument`）。
 
 ## 注意事项
 
