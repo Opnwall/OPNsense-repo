@@ -45,7 +45,7 @@ sing_box_start() {
     echo "Starting sing-box..."
     if [ -f "$pidfile" ] && kill -0 "$(cat "$pidfile")" 2>/dev/null; then
         echo "sing-box is already running."
-        return 1
+        return 0
     fi
 
     if service mihomo status >/dev/null 2>&1; then

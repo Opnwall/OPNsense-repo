@@ -21,17 +21,19 @@ sing-box 是一款功能强大、性能优秀的开源网络代理平台，支�
 
 ## 项目程序
 
-项目使用 [Vincent-Loeng](https://github.com/Vincent-Loeng/bsd-box) 静态二进制文件，默认文件路径如下：
+项目使用 [Opnwall](https://github.com/Opnwall/freebsd-sing-box) 静态二进制文件，默认文件路径如下：
 ```text
 src/usr/local/bin/bsd-box-freebsd-amd64.xz
 ```
 构建脚本会优先使用本地 `src/usr/local/bin/bsd-box-freebsd-amd64.xz` 文件。如果本地文件不存在，会从 Github 下载：
 ```text
-https://github.com/Vincent-Loeng/bsd-box/releases/download/v1.13.14-vincent/bsd-box-freebsd-amd64.xz
+https://github.com/Opnwall/freebsd-sing-box/releases/download/v1.14.4-freebsd-amd64-6b46731/bsd-box-freebsd-amd64.xz
 ```
-插件版本：`1.0.3`；FreeBSD 内核版本：`1.13.14-vincent`。二进制来源与 SHA256 记录在 `packaging/freebsd/binary-source.json`，构建时会校验摘要。
+插件版本：`1.0.4`；FreeBSD 内核版本：`1.14.4-freebsd`。二进制来源与 SHA256 记录在 `packaging/freebsd/binary-source.json`，构建时会校验摘要。
 
-OPNsense 使用 FreeBSD，因此采用此仓库的适配内核；官方 sing-box v1.14.2 未提供 FreeBSD 二进制。
+OPNsense 使用 FreeBSD，因此采用此仓库的适配内核。默认配置与订阅模板使用 `http_client.detour` 下载远程规则集，保持直连策略，避免旧 `download_detour` 弃用警告。
+
+插件独立运行并通过自身 `sing_box_enable` 配置开机自启，不依赖 EasyTier 或其他 VPN 插件。重复启动不会创建第二个进程。
 
 ## 注意事项
 

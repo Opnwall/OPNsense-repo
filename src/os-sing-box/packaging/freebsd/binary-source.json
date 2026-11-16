@@ -1,6 +1,7 @@
 {
-  "repo": "Vincent-Loeng/bsd-box",
-  "tag": "v1.13.14-vincent",
-  "url": "https://github.com/Vincent-Loeng/bsd-box/releases/download/v1.13.14-vincent/bsd-box-freebsd-amd64.xz",
-  "sha256": "68ed9a83a33974600ca0068c758eea0dfb06a82833dfd065f40afa0780ae93d7"
+  "repo": "Opnwall/freebsd-sing-box",
+  "tag": "v1.14.4-freebsd-amd64-6b46731",
+  "url": "https://github.com/Opnwall/freebsd-sing-box/releases/download/v1.14.4-freebsd-amd64-6b46731/bsd-box-freebsd-amd64.xz",
+  "sha256": "a9ff18bd4f86e2f4c059fb74d7c67a2c31f03ed6d9a042a8f50675a1af96c152",
+  "upstream_version": "1.14.4"
 }

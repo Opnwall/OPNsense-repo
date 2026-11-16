@@ -20,7 +20,7 @@ Tested on:
 
 ## Binary
 
-The project uses the static binary from [Vincent-Loeng](https://github.com/Vincent-Loeng/bsd-box). The default local asset path is:
+The project uses the static binary from [Opnwall](https://github.com/Opnwall/freebsd-sing-box). The default local asset path is:
 
 ```text
 src/usr/local/bin/bsd-box-freebsd-amd64.xz
@@ -29,12 +29,14 @@ src/usr/local/bin/bsd-box-freebsd-amd64.xz
 The build script prefers the local `src/usr/local/bin/bsd-box-freebsd-amd64.xz` file. If it is missing, the script downloads it from GitHub:
 
 ```text
-https://github.com/Vincent-Loeng/bsd-box/releases/download/v1.13.14-vincent/bsd-box-freebsd-amd64.xz
+https://github.com/Opnwall/freebsd-sing-box/releases/download/v1.14.4-freebsd-amd64-6b46731/bsd-box-freebsd-amd64.xz
 ```
 
-Plugin version: `1.0.3`; FreeBSD core version: `1.13.14-vincent`. The source URL and SHA256 are recorded in `packaging/freebsd/binary-source.json` and verified during packaging.
+Plugin version: `1.0.4`; FreeBSD core version: `1.14.4-freebsd`. The source URL and SHA256 are recorded in `packaging/freebsd/binary-source.json` and verified during packaging.
 
-OPNsense uses FreeBSD, so this plugin uses the adapted core; official sing-box v1.14.2 has no FreeBSD release binary.
+OPNsense uses the FreeBSD-adapted core from the pinned release.
+
+The default configuration and subscription template use `http_client.detour` for direct rule-set downloads. The service starts independently via its own `sing_box_enable` setting; it has no EasyTier dependency, and repeated start requests do not create a second process.
 
 ## Notes
 

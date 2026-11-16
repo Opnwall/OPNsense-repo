@@ -2,7 +2,7 @@
 set -eu
 
 PKG_NAME="${PKG_NAME:-os-sing-box}"
-VERSION="${VERSION:-1.0.3}"
+VERSION="${VERSION:-1.0.4}"
 ORIGIN="${ORIGIN:-opnsense/os-sing-box}"
 COMMENT="${COMMENT:-sing-box proxy integration for OPNsense}"
 MAINTAINER="${MAINTAINER:-https://github.com/Opnwall/}"
@@ -12,11 +12,11 @@ FORMAT="${FORMAT:-tgz}"
 ABI="${ABI:-universal}"
 OUTPUT_NAME="${OUTPUT_NAME:-${PKG_NAME}.pkg}"
 SING_BOX_ASSET="${SING_BOX_ASSET:-bsd-box-freebsd-amd64.xz}"
-SING_BOX_DOWNLOAD_URL="${SING_BOX_DOWNLOAD_URL:-https://github.com/Vincent-Loeng/bsd-box/releases/download/v1.13.14-vincent/$SING_BOX_ASSET}"
-SING_BOX_SHA256="${SING_BOX_SHA256:-68ed9a83a33974600ca0068c758eea0dfb06a82833dfd065f40afa0780ae93d7}"
+SING_BOX_DOWNLOAD_URL="${SING_BOX_DOWNLOAD_URL:-https://github.com/Opnwall/freebsd-sing-box/releases/download/v1.14.4-freebsd-amd64-6b46731/$SING_BOX_ASSET}"
+SING_BOX_SHA256="${SING_BOX_SHA256:-a9ff18bd4f86e2f4c059fb74d7c67a2c31f03ed6d9a042a8f50675a1af96c152}"
 DOWNLOAD_TIMEOUT="${DOWNLOAD_TIMEOUT:-300}"
 
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 WORKDIR="${WORKDIR:-"$SCRIPT_DIR/work/freebsd-pkg"}"
 STAGEDIR="$WORKDIR/stage"
 METADIR="$WORKDIR/meta"
