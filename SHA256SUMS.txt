@@ -5,7 +5,7 @@
 bbe3d702af7248ead8de37943f7a96c9d1d9c0b8093cc5936f1d54976821c91c  repo/FreeBSD:14:amd64/All/os-lucky-1.0.1.pkg
 544d68c2fdcb84dade20e2b635d0b67d1dbdeab3d9e9a045c048fffd52232393  repo/FreeBSD:14:amd64/All/os-mihomo-1.0.4.pkg
 3919d8f3c30446fc6b0dfe43f5122858faab7b2988a679fc2cf814263e2a131e  repo/FreeBSD:14:amd64/All/os-pftop-1.0.1.pkg
-e316afc1daa8f72367fcb48aef1a80cdc14b9ff0351f6f798a5cbbc6f937083a  repo/FreeBSD:14:amd64/All/os-sing-box-1.0.3.pkg
+f3040a15f4a2569482c5e2c390d2b761936336b156b1e43aa0cf27dd5796ec87  repo/FreeBSD:14:amd64/All/os-sing-box-1.0.4.pkg
 d70aa50aaaa9df5b5d7f43945f6c3d35177263881be4bf669c6ae4419d28c559  repo/FreeBSD:14:amd64/All/os-speedtest-1.0.2.pkg
 c4095fb60f0499ecd008aab2a88f692571f08ef508c72464fe82421552f34359  repo/FreeBSD:14:amd64/All/os-staticarp-1.0.1.pkg
 940f0f312cddd95de782bd32110e4e8937efb8a3c828c85ae8fcfde9afef1abe  repo/FreeBSD:14:amd64/All/os-ttyd-1.0.1.pkg
@@ -18,7 +18,7 @@ be6d8a2ae97e75ae8839fcacdf0137f8aeb78ef3700dd69eda19fab6f5473559  repo/FreeBSD:1
 83cbc4b706a10a0f0abf2e5a954fb30f41abb08ff4ff493bbc140e50f232fcaa  repo/FreeBSD:15:amd64/All/os-lucky-1.0.2.pkg
 544d68c2fdcb84dade20e2b635d0b67d1dbdeab3d9e9a045c048fffd52232393  repo/FreeBSD:15:amd64/All/os-mihomo-1.0.4.pkg
 27933cf313f322fc4c9ee2bd820504742bc6f24d4abcdcf35af290f60d9f7762  repo/FreeBSD:15:amd64/All/os-pftop-1.0.2.pkg
-dc3eb9662bdbe2bbe4379bc7a3af4e89b8595c5773747a3cb72ad7b41a8d03de  repo/FreeBSD:15:amd64/All/os-sing-box-1.0.3.pkg
+ab8bbe94ebaf1f103916b2b0668a4cfe825a3addc5d9cbe9e14ee0814b3c67b9  repo/FreeBSD:15:amd64/All/os-sing-box-1.0.4.pkg
 e5aa048ee95a03bf1f098b5789b582781b852b7675697c94a6e1bf12cd1ca89e  repo/FreeBSD:15:amd64/All/os-speedtest-1.0.2.pkg
 b011082d6b3569b497788b25d21ee20029a077aff6e956af6590e375db0de721  repo/FreeBSD:15:amd64/All/os-staticarp-1.0.2.pkg
 3b0ed1dd101fcbb2b76f69b9ab56104ce28595b0ec73ff0f484103e2fe3199f9  repo/FreeBSD:15:amd64/All/os-ttyd-1.0.2.pkg

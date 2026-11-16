@@ -57,7 +57,7 @@ Installed plugins remain available.
 | `os-lucky` | 1.0.2 | Lucky network toolbox integration |
 | `os-mihomo` | 1.0.4 | Mihomo proxy integration |
 | `os-pftop` | 1.0.2 | pfTop diagnostics page |
-| `os-sing-box` | 1.0.3 | sing-box proxy integration |
+| `os-sing-box` | 1.0.4 | sing-box proxy integration |
 | `os-staticarp` | 1.0.2 | Static ARP binding integration |
 | `os-speedtest` | 1.0.1 | Speedtest internet speed test |
 | `os-ttyd` | 1.0.2 | ttyd terminal integration |

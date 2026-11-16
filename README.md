@@ -60,7 +60,7 @@ pkg update -f
 | `os-lucky` | 1.0.2 | Lucky 网络工具箱 |
 | `os-mihomo` | 1.0.4 | Mihomo 代理工具 |
 | `os-pftop` | 1.0.2 | pfTop 诊断工具 |
-| `os-sing-box` | 1.0.3 | sing-box 代理工具 |
+| `os-sing-box` | 1.0.4 | sing-box 代理工具 |
 | `os-staticarp` | 1.0.2 | ARP 静态绑定工具 |
 | `os-speedtest` | 1.0.2 | Speedtest 互联网测速工具 |
 | `os-ttyd` | 1.0.2 | ttyd 终端程序 |
