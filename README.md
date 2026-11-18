@@ -19,6 +19,7 @@ Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-brightgreen)]()
 主要包含：
 
 -   🌐 代理插件（Mihomo、sing-box）
+-   🔗 VPN 组网（EasyTier）
 -   🛡 DNS 增强
 -   ☁️ DDNS
 -   🌏 中文语言包
@@ -56,6 +57,7 @@ pkg update -f
 | --- | --- | --- |
 | `os-ddclient-opnwall` | 1.0.2 | 增强版 DDClient 替代方案，支持阿里云、腾讯云及 IPv6 接口 |
 | `os-ddns-go` | 1.0.2 | DDNS-Go 动态 DNS |
+| [`os-easytier`](src/os-easytier/README.md) | 1.0.1 | EasyTier 组网 VPN，支持 WebGUI、开机自启和子网代理（OPNsense 26.7 / FreeBSD 15 amd64） |
 | `os-lang` | 1.0.4 | 中文汉化工具 |
 | `os-lucky` | 1.0.2 | Lucky 网络工具箱 |
 | `os-mihomo` | 1.0.4 | Mihomo 代理工具 |

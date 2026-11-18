@@ -53,6 +53,7 @@ Installed plugins remain available.
 | --- | --- | --- |
 | `os-ddclient-opnwall` | 1.0.2 | Extended DDClient replacement with Aliyun, Tencent Cloud and IPv6 interface support |
 | `os-ddns-go` | 1.0.2 | DDNS-Go dynamic DNS integration |
+| [`os-easytier`](src/os-easytier/README.md) | 1.0.1 | EasyTier mesh VPN with WebGUI, automatic startup and subnet proxy support (OPNsense 26.7 / FreeBSD 15 amd64) |
 | `os-lang` | 1.0.4 | Chinese localization updater |
 | `os-lucky` | 1.0.2 | Lucky network toolbox integration |
 | `os-mihomo` | 1.0.4 | Mihomo proxy integration |
