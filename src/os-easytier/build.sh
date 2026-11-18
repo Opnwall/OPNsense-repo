@@ -2,7 +2,7 @@
 set -eu
 
 PKG_NAME="${PKG_NAME:-os-easytier}"
-VERSION="${VERSION:-1.0.0}"
+VERSION="${VERSION:-1.0.1}"
 ORIGIN="${ORIGIN:-opnsense/os-easytier}"
 COMMENT="${COMMENT:-EasyTier mesh VPN integration for OPNsense}"
 MAINTAINER="${MAINTAINER:-https://github.com/Opnwall/}"
@@ -33,7 +33,7 @@ PKG_ARCH="freebsd:${ABI_MAJOR}:x86:64"
 
 rm -rf "$WORKDIR"
 mkdir -p "$STAGEDIR" "$METADIR" "$DISTDIR"
-(cd "$SCRIPT_DIR/src" && tar --exclude '.DS_Store' -cf - .) | (cd "$STAGEDIR" && tar -xf -)
+(cd "$SCRIPT_DIR/src" && tar --exclude '.DS_Store' --exclude '._*' -cf - .) | (cd "$STAGEDIR" && tar -xf -)
 chmod 0755 "$STAGEDIR/usr/local/etc/rc.d/easytier" "$STAGEDIR/usr/local/sbin/easytier-core" "$STAGEDIR/usr/local/sbin/easytier-cli"
 find "$STAGEDIR" -type f | sed "s#^$STAGEDIR##" | sort > "$PLIST"
 FLATSIZE=0

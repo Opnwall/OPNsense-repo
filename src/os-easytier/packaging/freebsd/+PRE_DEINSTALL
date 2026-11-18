@@ -24,4 +24,4 @@ rm -f "${pidfile}" /var/run/easytier.rules
 if /sbin/ifconfig easytier0 >/dev/null 2>&1; then
     /sbin/ifconfig easytier0 destroy >/dev/null 2>&1 || true
 fi
-sysrc -q -x easytier_enable >/dev/null 2>&1 || true
+# Retain /etc/rc.conf.d/easytier so upgrades preserve the startup preference.

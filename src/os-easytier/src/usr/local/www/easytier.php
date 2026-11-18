@@ -146,9 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } elseif (in_array($action, ['start', 'stop', 'restart'], true)) {
             if ($action === 'start') {
-                exec('/usr/sbin/sysrc easytier_enable=YES >/dev/null 2>&1');
+                exec('/usr/sbin/sysrc -f /etc/rc.conf.d/easytier easytier_enable=YES >/dev/null 2>&1');
             } elseif ($action === 'stop') {
-                exec('/usr/sbin/sysrc easytier_enable=NO >/dev/null 2>&1');
+                exec('/usr/sbin/sysrc -f /etc/rc.conf.d/easytier easytier_enable=NO >/dev/null 2>&1');
             }
             exec('/usr/local/sbin/configctl easytier ' . $action . ' >/dev/null 2>&1 &');
             $message = et_t('Service command submitted.');

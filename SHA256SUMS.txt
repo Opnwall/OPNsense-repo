@@ -12,7 +12,7 @@ c4095fb60f0499ecd008aab2a88f692571f08ef508c72464fe82421552f34359  repo/FreeBSD:1
 d3756a26924f0d8d2ecba6c7b605d6c5ade060feb6aa21651db817b99ac749cb  repo/FreeBSD:14:amd64/All/os-unboundcustom-1.0.1.pkg
 a533a9459e234ad24f464e08c3d158d196d6a0761e976bd6900a26482a98ed50  repo/FreeBSD:15:amd64/All/os-ddclient-opnwall-1.0.2.pkg
 268e4465825ac95eed6950c7ef9f7696c4d7ebb14b9604e9768dfa771257c67e  repo/FreeBSD:15:amd64/All/os-ddns-go-1.0.2.pkg
-60db5f4b08554d1b911870a5e07be2c78134bcd367e35d2d798b5c986d009a46  repo/FreeBSD:15:amd64/All/os-easytier-1.0.0.pkg
+3be856eb1f895abc9486f029801ea4ce4579945804526d990405237c8d81e049  repo/FreeBSD:15:amd64/All/os-easytier-1.0.1.pkg
 652ce94a7692dae6af97fbe4648217b6e19291a3915e5ea1cbc4dc05a2b65bb0  repo/FreeBSD:15:amd64/All/os-lang-1.0.3.pkg
 be6d8a2ae97e75ae8839fcacdf0137f8aeb78ef3700dd69eda19fab6f5473559  repo/FreeBSD:15:amd64/All/os-lang-1.0.4.pkg
 83cbc4b706a10a0f0abf2e5a954fb30f41abb08ff4ff493bbc140e50f232fcaa  repo/FreeBSD:15:amd64/All/os-lucky-1.0.2.pkg

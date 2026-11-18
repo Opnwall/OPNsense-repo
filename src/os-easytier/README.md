@@ -2,7 +2,7 @@
 
 `os-easytier` 是适用于 OPNsense 的 EasyTier 组网 VPN 插件。它集成 EasyTier Core，可在 **VPN > EasyTier** 中完成配置、服务管理、状态查看、节点查看和日志排查。
 
-当前插件版本：`1.0.0`
+当前插件版本：`1.0.1`
 
 内置 EasyTier 版本：`2.6.4`
 
@@ -31,7 +31,6 @@
 
 ```text
 packaging/freebsd/                                      FreeBSD pkg 元数据及安装、卸载脚本
-src/etc/rc.conf.d/easytier                              rc.conf 默认设置
 src/usr/local/etc/easytier/config.toml.sample           安装示例配置
 src/usr/local/etc/rc.d/easytier                         EasyTier rc.d 服务
 src/usr/local/etc/inc/plugins.inc.d/easytier.inc        OPNsense 服务与防火墙集成
@@ -111,6 +110,8 @@ mtu = 1300
 private_mode = true
 proxy_forward_by_system = true
 ```
+
+自启设置统一保存在 `/etc/rc.conf.d/easytier`。点击 **启动** 会启用开机自启，点击 **停止** 会禁用开机自启；重启操作保持设置。升级会迁移并清除 `/etc/rc.conf` 和 `/etc/rc.conf.local` 中的旧设置，保留现有自启选择。
 
 点击 **保存并重启** 后，到状态、节点和日志页面确认运行结果。
 

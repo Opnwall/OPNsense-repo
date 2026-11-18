@@ -7,7 +7,26 @@ fi
 chmod 0600 /usr/local/etc/easytier/config.toml
 touch /var/log/easytier.log
 chmod 0600 /var/log/easytier.log
-sysrc -q easytier_enable=NO >/dev/null 2>&1 || true
+# Keep one persistent, unowned service setting across upgrades and reinstalls.
+# Migrate the legacy WebGUI setting before removing its duplicate entries.
+legacy_enable=""
+for legacy_file in /etc/rc.conf /etc/rc.conf.local; do
+    if [ -f "$legacy_file" ]; then
+        value="$(sysrc -f "$legacy_file" -n easytier_enable 2>/dev/null || true)"
+        [ -z "$value" ] || legacy_enable="$value"
+    fi
+done
+mkdir -p /etc/rc.conf.d
+if [ -n "$legacy_enable" ]; then
+    sysrc -f /etc/rc.conf.d/easytier easytier_enable="$legacy_enable" >/dev/null
+elif [ ! -f /etc/rc.conf.d/easytier ]; then
+    sysrc -f /etc/rc.conf.d/easytier easytier_enable=NO >/dev/null
+fi
+for legacy_file in /etc/rc.conf /etc/rc.conf.local; do
+    if [ -f "$legacy_file" ] && sysrc -f "$legacy_file" -n easytier_enable >/dev/null 2>&1; then
+        sysrc -f "$legacy_file" -x easytier_enable >/dev/null
+    fi
+done
 service configd restart >/dev/null 2>&1 || true
 configctl filter reload >/dev/null 2>&1 || true
 # OPNsense caches the merged sidebar model for up to one hour.  Invalidate it
