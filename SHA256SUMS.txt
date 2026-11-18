@@ -1,15 +1,3 @@
-68dcc81a39ac5a1851bd16a79d953a89be4bb30640448da62cb7143e5ef44fcc  repo/FreeBSD:14:amd64/All/os-ddclient-opnwall-1.0.1.pkg
-46ed62942ee0b36d4e217a4db3f4036cf5907af9994fa78987331d68ac00ca09  repo/FreeBSD:14:amd64/All/os-ddns-go-1.0.1.pkg
-652ce94a7692dae6af97fbe4648217b6e19291a3915e5ea1cbc4dc05a2b65bb0  repo/FreeBSD:14:amd64/All/os-lang-1.0.3.pkg
-940e8e0b39741d273e61d9a2f8d34064d0c1753ba5fd034de71a869999b7aaff  repo/FreeBSD:14:amd64/All/os-lang-1.0.4.pkg
-bbe3d702af7248ead8de37943f7a96c9d1d9c0b8093cc5936f1d54976821c91c  repo/FreeBSD:14:amd64/All/os-lucky-1.0.1.pkg
-544d68c2fdcb84dade20e2b635d0b67d1dbdeab3d9e9a045c048fffd52232393  repo/FreeBSD:14:amd64/All/os-mihomo-1.0.4.pkg
-3919d8f3c30446fc6b0dfe43f5122858faab7b2988a679fc2cf814263e2a131e  repo/FreeBSD:14:amd64/All/os-pftop-1.0.1.pkg
-f3040a15f4a2569482c5e2c390d2b761936336b156b1e43aa0cf27dd5796ec87  repo/FreeBSD:14:amd64/All/os-sing-box-1.0.4.pkg
-d70aa50aaaa9df5b5d7f43945f6c3d35177263881be4bf669c6ae4419d28c559  repo/FreeBSD:14:amd64/All/os-speedtest-1.0.2.pkg
-c4095fb60f0499ecd008aab2a88f692571f08ef508c72464fe82421552f34359  repo/FreeBSD:14:amd64/All/os-staticarp-1.0.1.pkg
-940f0f312cddd95de782bd32110e4e8937efb8a3c828c85ae8fcfde9afef1abe  repo/FreeBSD:14:amd64/All/os-ttyd-1.0.1.pkg
-d3756a26924f0d8d2ecba6c7b605d6c5ade060feb6aa21651db817b99ac749cb  repo/FreeBSD:14:amd64/All/os-unboundcustom-1.0.1.pkg
 a533a9459e234ad24f464e08c3d158d196d6a0761e976bd6900a26482a98ed50  repo/FreeBSD:15:amd64/All/os-ddclient-opnwall-1.0.2.pkg
 268e4465825ac95eed6950c7ef9f7696c4d7ebb14b9604e9768dfa771257c67e  repo/FreeBSD:15:amd64/All/os-ddns-go-1.0.2.pkg
 3be856eb1f895abc9486f029801ea4ce4579945804526d990405237c8d81e049  repo/FreeBSD:15:amd64/All/os-easytier-1.0.1.pkg

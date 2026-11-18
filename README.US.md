@@ -21,6 +21,8 @@ It provides networking plugins that extend OPNsense with proxy
 integrations, DNS enhancements, Dynamic DNS, localization, diagnostics
 and system utilities.
 
+The package repository currently supports **FreeBSD 15 amd64**. The FreeBSD 14 package directory has been retired.
+
 ## Installation
 
 Open the terminal and run the following command to add the community repository:

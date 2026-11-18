@@ -26,6 +26,8 @@ Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-brightgreen)]()
 -   🔧 网络工具
 -   📊 系统诊断插件
 
+当前软件仓库仅提供 **FreeBSD 15 amd64** 软件包，FreeBSD 14 软件包目录已移除。
+
 ## 安装方法
 进入终端，运行以下命令添加社区存储库：
 
